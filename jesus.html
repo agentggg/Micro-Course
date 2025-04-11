@@ -169,9 +169,9 @@ function updateSlide() {
   card.addEventListener('click', updateSlide);
 
   // Load flashcards based on filename
-  const segments = location.pathname.split("/").filter(Boolean);
-const fileName = segments[segments.length - 1].toLowerCase();
-fetch(`flashcards/${fileName}.json`)
+const path = location.pathname;
+const file = path.substring(path.lastIndexOf("/") + 1).replace(".html", "").toLowerCase();
+fetch(`flashcards/${file}.json`)
     .then(res => res.json())
     .then(data => {
       const courseTitle = data[0];        // First row = course title
