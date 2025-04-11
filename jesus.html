@@ -156,7 +156,9 @@ function updateSlide() {
 
     // ⬇️ Redirect if user taps after last slide
     if (index === flashcards.length - 1) {
-      window.location.href = "https://www.youtube.com/@evangeliststevensongerard";
+      setTimeout(function() {
+        window.location.href = "https://www.youtube.com/@evangeliststevensongerard";
+      }, 1000);
     } else {
       index++;
     }
