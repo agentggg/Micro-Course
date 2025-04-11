@@ -161,8 +161,10 @@
   card.addEventListener('click', updateSlide);
 
   // Load flashcards based on filename
-  const pageName = location.pathname.split("/").pop().replace(".html", "") || "index";
-  fetch(`flashcards/${pageName}.json`)
+// Load flashcards based on filename
+const pageName = location.pathname.split("/").pop().replace(".html", "") || "index";
+fetch(`${pageName}.json`)
+
     .then(res => res.json())
     .then(data => {
       // Insert first + last card manually
