@@ -161,19 +161,20 @@
   card.addEventListener('click', updateSlide);
 
   // Load flashcards based on filename
-// Load flashcards based on filename
-const pageName = location.pathname.split("/").pop().replace(".html", "").toLowerCase();
-fetch(`flashcards/${pageName}.json`)
-
+  const pageName = location.pathname.split("/").pop().replace(".html", "").toLowerCase();
+  fetch(`flashcards/${pageName}.json`)
     .then(res => res.json())
     .then(data => {
-      // Insert first + last card manually
+      const courseTitle = data[0];        // First row = course title
+      const contentSlides = data.slice(1); // Remove title from flashcard body
+
       flashcards = [
-        "👋 Welcome, friend!",
-        ...data,
-        "🎉 Thank you for reading! We hope this blessed you."
+        `👋 Welcome to ${courseTitle}`,
+        ...contentSlides,
+        `🎉 Thank you for completing ${courseTitle}. We hope it blessed you!`
       ];
-      card.textContent = flashcards[0]; // show intro
+
+      card.textContent = flashcards[0]; // show first
     })
     .catch(err => {
       console.error("Could not load flashcards:", err);
