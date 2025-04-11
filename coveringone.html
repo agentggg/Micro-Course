@@ -116,6 +116,9 @@
   </style>
 </head>
 <body>
+    <button onclick="history.back()" style="position:absolute; top:80px; left:20px; background:#f5dfbd; color:black; border:none; padding:10px 16px; border-radius:8px; cursor:pointer;">
+    ⬅️⬅️ Go Back
+  </button>
   <div class="top-instructor" id="instructor-label">Instructor: The Holy Spirit</div>
 
   <img id="avatar" src="stevo.png" alt="Avatar" class="avatar" id="avatar" />
@@ -130,9 +133,6 @@
   </div>
 
   <div class="hint" id="hint">Tap the card to reveal the next flash 🔄</div>
-  <button onclick="history.back()" style="position:absolute; top:20px; left:20px; background:#f5dfbd; color:black; border:none; padding:10px 16px; border-radius:8px; cursor:pointer;">
-    ⬅️⬅️ Go Back
-  </button>
 
 <script>
   const card = document.getElementById('flashcard');
