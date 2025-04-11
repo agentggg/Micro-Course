@@ -162,7 +162,7 @@
 
   // Load flashcards based on filename
 // Load flashcards based on filename
-const pageName = location.pathname.split("/").pop().replace(".html", "") || "index";
+const pageName = location.pathname.split("/").pop().replace(".html", "").toLowerCase() || "index";
 fetch(`${pageName}.json`)
 
     .then(res => res.json())
