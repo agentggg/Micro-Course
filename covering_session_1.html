@@ -20,25 +20,19 @@
       align-items: center;
       flex-direction: column;
       text-align: center;
-      height: 100vh;
+      min-height: 100vh;
       padding: 20px;
+      position: relative;
     }
 
-    .header {
-      margin-bottom: 10px;
-      font-size: 1.8em;
+    .top-instructor {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 0.85em;
       font-weight: bold;
-      color: #f8f8f8;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
-    }
-
-    .subtitle {
-      font-size: 1.5em;
-      margin-bottom: 20px;
-      /*color: #ddd;*/
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      font-family: 'Segoe UI Semibold', 'Segoe UI', sans-serif;
+      color: #f5dfbd;
+      display: none;
     }
 
     .avatar {
@@ -48,6 +42,25 @@
       margin-bottom: 30px;
       object-fit: cover;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.5s ease;
+    }
+
+    .avatar.small {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      margin: 0;
+    }
+
+    .subtitle {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      font-family: 'Segoe UI Semibold', 'Segoe UI', sans-serif;
     }
 
     .card-container {
@@ -62,15 +75,17 @@
       color: #ebbf7b;
       border-radius: 20px;
       padding: 30px 20px;
-      width: 80%;
-      max-width: 320px;
-      font-size: 1.4em;
-      font-weight:1000;
+      width: 90%;
+      max-width: 500px;
+      font-size: 1.2em;
+      font-weight: 600;
       box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
-      transition: transform 0.6s ease-in-out;
+      transition: transform 0.6s ease-in-out, font-size 0.4s ease-in-out;
       transform-style: preserve-3d;
       backface-visibility: hidden;
       cursor: pointer;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
     }
 
     .hint {
@@ -91,8 +106,10 @@
   </style>
 </head>
 <body>
-  <img src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-edc0-61f7-a6b5-9344ad59092e/raw?se=2025-04-11T18%3A50%3A05Z&sp=r&sv=2024-08-04&sr=b&scid=db1f69f9-12ef-5305-9c63-12a3577db845&skoid=f0c3f613-0f9b-4a8a-a29a-c1a910343ad7&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-11T11%3A47%3A56Z&ske=2025-04-12T11%3A47%3A56Z&sks=b&skv=2024-08-04&sig=QB/N8tPwLZQRD2E0bJQHY8xzoiHgdQzeYUBSBryTI%2BI%3D" alt="Avatar" class="avatar" />
-  <!--<div class="header">📚 E-Learning</div>-->
+  <div class="top-instructor" id="instructor-label">Instructor: The Holy Spirit</div>
+
+  <img id="avatar" src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-edc0-61f7-a6b5-9344ad59092e/raw?se=2025-04-11T18%3A50%3A05Z&sp=r&sv=2024-08-04&sr=b&scid=db1f69f9-12ef-5305-9c63-12a3577db845&skoid=f0c3f613-0f9b-4a8a-a29a-c1a910343ad7&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-11T11%3A47%3A56Z&ske=2025-04-12T11%3A47%3A56Z&sks=b&skv=2024-08-04&sig=QB/N8tPwLZQRD2E0bJQHY8xzoiHgdQzeYUBSBryTI%2BI%3D" alt="Avatar" class="avatar" />
+
   <div class="subtitle"><span style="color:#f5dfbd">Crafted by:</span> Stevenson Gerard</div>
   <div class="subtitle"><span style="color:#f5dfbd">Instructor:</span> The Holy Spirit</div>
 
@@ -107,22 +124,42 @@
       "👋 Welcome, friend!",
       "Did you know that...",
       "✝️ Jesus is Lord",
-      "🌟 AThere are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
+      "🌟 It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions h",
       "🙌 He loves you deeply",
       "📖 This is the beginning of your journey!"
     ];
 
     let index = 0;
     const card = document.getElementById('flashcard');
+    const avatar = document.getElementById('avatar');
+    const instructorLabel = document.getElementById('instructor-label');
 
-    card.addEventListener('click', () => {
+    function updateSlide() {
+      // Rotate card for effect
       card.style.transform = 'rotateY(180deg)';
       setTimeout(() => {
         card.textContent = flashcards[index];
         card.style.transform = 'rotateY(0deg)';
+
+        // Determine if first or last slide
+        const isFirst = index === 0;
+        const isLast = index === flashcards.length - 1;
+
+        // Avatar position and size
+        avatar.classList.toggle('small', !isFirst && !isLast);
+
+        // Show or hide floating instructor label
+        instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
+
+        // Adjust card font-size for large content
+        const longText = flashcards[index].length > 180;
+        card.style.fontSize = longText ? '1em' : '1.2em';
+
         index = (index + 1) % flashcards.length;
       }, 300);
-    });
+    }
+
+    card.addEventListener('click', updateSlide);
   </script>
 </body>
 </html>
