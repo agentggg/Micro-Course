@@ -27,7 +27,7 @@
 
     .top-instructor {
       position: absolute;
-      top: 10px;
+      top: 50px;
       left: 20px;
       font-size: 0.85em;
       font-weight: bold;
@@ -138,25 +138,31 @@
   let flashcards = [];
   let index = 0;
 
-  function updateSlide() {
-    card.style.transform = 'rotateY(180deg)';
-    setTimeout(() => {
-      const content = flashcards[index];
-      card.textContent = content;
-      card.style.transform = 'rotateY(0deg)';
+function updateSlide() {
+  card.style.transform = 'rotateY(180deg)';
+  setTimeout(() => {
+    const content = flashcards[index];
+    card.textContent = content;
+    card.style.transform = 'rotateY(0deg)';
 
-      const isFirst = index === 0;
-      const isLast = index === flashcards.length - 1;
+    const isFirst = index === 0;
+    const isLast = index === flashcards.length - 1;
 
-      avatar.classList.toggle('small', !isFirst && !isLast);
-      instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
-      subtitleContainer.style.display = isFirst ? 'flex' : 'none';
-      hint.textContent = isLast ? '🎊 You’ve reached the end.' : 'Tap the card to reveal the next flash 🔄';
-      card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
+    avatar.classList.toggle('small', !isFirst && !isLast);
+    instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
+    subtitleContainer.style.display = isFirst ? 'flex' : 'none';
+    hint.textContent = isLast ? '🎊 You’ve reached the end.' : 'Tap the card to reveal the next flash 🔄';
+    card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
 
-      index = (index + 1) % flashcards.length;
-    }, 300);
-  }
+    // ⬇️ Redirect if user taps after last slide
+    if (index === flashcards.length - 1) {
+      window.location.href = "https://www.youtube.com/@evangeliststevensongerard";
+    } else {
+      index++;
+    }
+  }, 300);
+}
+
 
   card.addEventListener('click', updateSlide);
 
