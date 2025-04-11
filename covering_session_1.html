@@ -128,57 +128,57 @@
 
   <div class="hint" id="hint">Tap the card to reveal the next flash 🔄</div>
 
-  <script>
-    const flashcards = [
-      "👋 Welcome, friend!",
-      "Did you know that...",
-      "✝️ Jesus is Lord",
-      "🌟 It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout...",
-      "🙌 It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions h",
-      "📖 This is the beginning of your journey!",
-      "🎉 Thank you for reading!\nWe hope this blessed you."
-    ];
+<script>
+  const card = document.getElementById('flashcard');
+  const avatar = document.getElementById('avatar');
+  const instructorLabel = document.getElementById('instructor-label');
+  const subtitleContainer = document.getElementById('subtitles');
+  const hint = document.getElementById('hint');
 
-    let index = 0;
-    const card = document.getElementById('flashcard');
-    const avatar = document.getElementById('avatar');
-    const instructorLabel = document.getElementById('instructor-label');
-    const subtitleContainer = document.getElementById('subtitles');
-    const hint = document.getElementById('hint');
+  let flashcards = [];
+  let index = 0;
 
-    function updateSlide() {
-      card.style.transform = 'rotateY(180deg)';
-      setTimeout(() => {
-        const content = flashcards[index];
-        card.textContent = content;
-        card.style.transform = 'rotateY(0deg)';
+  function updateSlide() {
+    card.style.transform = 'rotateY(180deg)';
+    setTimeout(() => {
+      const content = flashcards[index];
+      card.textContent = content;
+      card.style.transform = 'rotateY(0deg)';
 
-        const isFirst = index === 0;
-        const isLast = index === flashcards.length - 1;
+      const isFirst = index === 0;
+      const isLast = index === flashcards.length - 1;
 
-        // Avatar resizing
-        avatar.classList.toggle('small', !isFirst && !isLast);
+      avatar.classList.toggle('small', !isFirst && !isLast);
+      instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
+      subtitleContainer.style.display = isFirst ? 'flex' : 'none';
+      hint.textContent = isLast ? '🎊 You’ve reached the end.' : 'Tap the card to reveal the next flash 🔄';
+      card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
 
-        // Floating instructor on mid slides
-        instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
+      index = (index + 1) % flashcards.length;
+    }, 300);
+  }
 
-        // Show/hide main subtitle container
-        subtitleContainer.style.display = (isFirst) ? 'flex' : 'none';
+  card.addEventListener('click', updateSlide);
 
-        // Handle final message view
-        hint.textContent = isLast
-          ? '🎊 You’ve reached the end.'
-          : 'Tap the card to reveal the next flash 🔄';
+  // Load flashcards based on filename
+  const pageName = location.pathname.split("/").pop().replace(".html", "") || "index";
+  fetch(`flashcards/${pageName}.json`)
+    .then(res => res.json())
+    .then(data => {
+      // Insert first + last card manually
+      flashcards = [
+        "👋 Welcome, friend!",
+        ...data,
+        "🎉 Thank you for reading! We hope this blessed you."
+      ];
+      card.textContent = flashcards[0]; // show intro
+    })
+    .catch(err => {
+      console.error("Could not load flashcards:", err);
+      card.textContent = "⚠️ Could not load flashcards";
+    });
+</script>
 
-        // Dynamic font size for long content
-        const longText = content.length > 180;
-        card.style.fontSize = longText ? '1em' : '1.2em';
 
-        index = (index + 1) % flashcards.length;
-      }, 300);
-    }
-
-    card.addEventListener('click', updateSlide);
-  </script>
 </body>
 </html>
