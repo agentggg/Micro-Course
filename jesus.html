@@ -158,7 +158,7 @@ function updateSlide() {
     if (index === flashcards.length - 1) {
       setTimeout(function() {
         window.location.href = "https://www.youtube.com/@evangeliststevensongerard";
-      }, 1000);
+      }, 1500);
     } else {
       index++;
     }
@@ -177,9 +177,11 @@ function updateSlide() {
       const contentSlides = data.slice(1); // Remove title from flashcard body
 
       flashcards = [
-        `👋 Welcome to ${courseTitle}`,
+        `👋 ${courseTitle}`,
         ...contentSlides,
-        `🎉 Thank you for completing ${courseTitle}. We hope it blessed you!`
+        `🎉 Thank you for reading!
+        ${courseTitle}. 
+        I hope it blessed you!`
       ];
 
       card.textContent = flashcards[0]; // show first
