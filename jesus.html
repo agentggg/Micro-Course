@@ -135,18 +135,10 @@
   const subtitleContainer = document.getElementById('subtitles');
   const hint = document.getElementById('hint');
 
-let flashcards = [];
-let index = -1; // so first tap starts with index 0
+  let flashcards = [];
+  let index = 0;
 
 function updateSlide() {
-  index++; // 👈 move this to the top
-
-  // Redirect if tapped after final slide
-  if (index === flashcards.length) {
-    window.location.href = "https://www.youtube.com/@evangeliststevensongerard";
-    return;
-  }
-
   card.style.transform = 'rotateY(180deg)';
   setTimeout(() => {
     const content = flashcards[index];
@@ -161,17 +153,24 @@ function updateSlide() {
     subtitleContainer.style.display = isFirst ? 'flex' : 'none';
     hint.textContent = isLast ? '🎊 You’ve reached the end.' : 'Tap the card to reveal the next flash 🔄';
     card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
+
+    // ⬇️ Redirect if user taps after last slide
+    if (index === flashcards.length - 1) {
+      setTimeout(function() {
+        window.location.href = "https://www.youtube.com/@evangeliststevensongerard";
+      }, 1500);
+    } else {
+      index++;
+    }
   }, 300);
 }
-
 
 
   card.addEventListener('click', updateSlide);
 
   // Load flashcards based on filename
-const path = location.pathname;
-const file = path.substring(path.lastIndexOf("/") + 1).replace(".html", "").toLowerCase();
-fetch(`flashcards/${file}.json`)
+  const pageName = location.pathname.split("/").pop().replace(".html", "").toLowerCase();
+  fetch(`flashcards/${pageName}.json`)
     .then(res => res.json())
     .then(data => {
       const courseTitle = data[0];        // First row = course title
