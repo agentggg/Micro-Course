@@ -55,9 +55,16 @@
       margin: 0;
     }
 
+    .subtitle-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 20px;
+      transition: opacity 0.4s ease;
+    }
+
     .subtitle {
       font-size: 1.5em;
-      margin-bottom: 20px;
       font-weight: 600;
       letter-spacing: 0.5px;
       font-family: 'Segoe UI Semibold', 'Segoe UI', sans-serif;
@@ -108,51 +115,63 @@
 <body>
   <div class="top-instructor" id="instructor-label">Instructor: The Holy Spirit</div>
 
-  <img id="avatar" src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-edc0-61f7-a6b5-9344ad59092e/raw?se=2025-04-11T18%3A50%3A05Z&sp=r&sv=2024-08-04&sr=b&scid=db1f69f9-12ef-5305-9c63-12a3577db845&skoid=f0c3f613-0f9b-4a8a-a29a-c1a910343ad7&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-11T11%3A47%3A56Z&ske=2025-04-12T11%3A47%3A56Z&sks=b&skv=2024-08-04&sig=QB/N8tPwLZQRD2E0bJQHY8xzoiHgdQzeYUBSBryTI%2BI%3D" alt="Avatar" class="avatar" />
+  <img id="avatar" src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-edc0-61f7-a6b5-9344ad59092e/raw?se=2025-04-11T18%3A50%3A05Z&sp=r&sv=2024-08-04&sr=b&scid=db1f69f9-12ef-5305-9c63-12a3577db845&skoid=f0c3f613-0f9b-4a8a-a29a-c1a910343ad7&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-11T11%3A47%3A56Z&ske=2025-04-12T11%3A47%3A56Z&sks=b&skv=2024-08-04&sig=QB/N8tPwLZQRD2E0bJQHY8xzoiHgdQzeYUBSBryTI%2BI%3D" alt="Avatar" class="avatar" id="avatar" />
 
-  <div class="subtitle"><span style="color:#f5dfbd">Crafted by:</span> Stevenson Gerard</div>
-  <div class="subtitle"><span style="color:#f5dfbd">Instructor:</span> The Holy Spirit</div>
+  <div id="subtitles" class="subtitle-container">
+    <div class="subtitle"><span style="color:#f5dfbd">Crafted by:</span> Stevenson Gerard</div>
+    <div class="subtitle"><span style="color:#f5dfbd">Instructor:</span> The Holy Spirit</div>
+  </div>
 
   <div class="card-container">
     <div class="card" id="flashcard">Tap to begin</div>
   </div>
 
-  <div class="hint">Tap the card to reveal the next flash 🔄</div>
+  <div class="hint" id="hint">Tap the card to reveal the next flash 🔄</div>
 
   <script>
     const flashcards = [
       "👋 Welcome, friend!",
       "Did you know that...",
       "✝️ Jesus is Lord",
-      "🌟 It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions h",
-      "🙌 He loves you deeply",
-      "📖 This is the beginning of your journey!"
+      "🌟 It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout...",
+      "🙌 It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions h",
+      "📖 This is the beginning of your journey!",
+      "🎉 Thank you for reading!\nWe hope this blessed you."
     ];
 
     let index = 0;
     const card = document.getElementById('flashcard');
     const avatar = document.getElementById('avatar');
     const instructorLabel = document.getElementById('instructor-label');
+    const subtitleContainer = document.getElementById('subtitles');
+    const hint = document.getElementById('hint');
 
     function updateSlide() {
-      // Rotate card for effect
       card.style.transform = 'rotateY(180deg)';
       setTimeout(() => {
-        card.textContent = flashcards[index];
+        const content = flashcards[index];
+        card.textContent = content;
         card.style.transform = 'rotateY(0deg)';
 
-        // Determine if first or last slide
         const isFirst = index === 0;
         const isLast = index === flashcards.length - 1;
 
-        // Avatar position and size
+        // Avatar resizing
         avatar.classList.toggle('small', !isFirst && !isLast);
 
-        // Show or hide floating instructor label
+        // Floating instructor on mid slides
         instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
 
-        // Adjust card font-size for large content
-        const longText = flashcards[index].length > 180;
+        // Show/hide main subtitle container
+        subtitleContainer.style.display = (isFirst) ? 'flex' : 'none';
+
+        // Handle final message view
+        hint.textContent = isLast
+          ? '🎊 You’ve reached the end.'
+          : 'Tap the card to reveal the next flash 🔄';
+
+        // Dynamic font size for long content
+        const longText = content.length > 180;
         card.style.fontSize = longText ? '1em' : '1.2em';
 
         index = (index + 1) % flashcards.length;
