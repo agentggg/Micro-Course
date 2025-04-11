@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Flashcards</title>
+  <title>Flashcards | E-Learning by Stevenson Gerard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * {
@@ -24,9 +24,26 @@
       padding: 20px;
     }
 
+    .header {
+      margin-bottom: 10px;
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #f8f8f8;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .subtitle {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      /*color: #ddd;*/
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      font-family: 'Segoe UI Semibold', 'Segoe UI', sans-serif;
+    }
+
     .avatar {
-      width: 160px;
-      height: 160px;
+      width: 360px;
+      height: 360px;
       border-radius: 50%;
       margin-bottom: 30px;
       object-fit: cover;
@@ -42,13 +59,13 @@
 
     .card {
       background: white;
-      color: black;
-      border-radius: 24px;
-      padding: 50px 30px;
-      width: 90%;
-      max-width: 450px;
-      font-size: 1.8em;
-      font-weight: 500;
+      color: #ebbf7b;
+      border-radius: 20px;
+      padding: 30px 20px;
+      width: 80%;
+      max-width: 320px;
+      font-size: 1.4em;
+      font-weight:1000;
       box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
       transition: transform 0.6s ease-in-out;
       transform-style: preserve-3d;
@@ -57,9 +74,9 @@
     }
 
     .hint {
-      margin-top: 30px;
-      font-size: 1em;
-      color: #bbb;
+      margin-top: 25px;
+      font-size: 0.95em;
+      color: #f5dfbd;
     }
 
     @keyframes pulse {
@@ -74,12 +91,10 @@
   </style>
 </head>
 <body>
-
-  <img
-    src="https://static.wixstatic.com/media/a35cf1_467d759d18384d428f3f42ceebf5d518~mv2.png/v1/fill/w_690,h_430,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/a35cf1_467d759d18384d428f3f42ceebf5d518~mv2.png"
-    alt="Avatar"
-    class="avatar"
-  />
+  <img src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-edc0-61f7-a6b5-9344ad59092e/raw?se=2025-04-11T18%3A50%3A05Z&sp=r&sv=2024-08-04&sr=b&scid=db1f69f9-12ef-5305-9c63-12a3577db845&skoid=f0c3f613-0f9b-4a8a-a29a-c1a910343ad7&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-11T11%3A47%3A56Z&ske=2025-04-12T11%3A47%3A56Z&sks=b&skv=2024-08-04&sig=QB/N8tPwLZQRD2E0bJQHY8xzoiHgdQzeYUBSBryTI%2BI%3D" alt="Avatar" class="avatar" />
+  <!--<div class="header">📚 E-Learning</div>-->
+  <div class="subtitle"><span style="color:#f5dfbd">Crafted by:</span> Stevenson Gerard</div>
+  <div class="subtitle"><span style="color:#f5dfbd">Instructor:</span> The Holy Spirit</div>
 
   <div class="card-container">
     <div class="card" id="flashcard">Tap to begin</div>
@@ -92,7 +107,7 @@
       "👋 Welcome, friend!",
       "Did you know that...",
       "✝️ Jesus is Lord",
-      "🌟 And there is none like Him",
+      "🌟 AThere are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
       "🙌 He loves you deeply",
       "📖 This is the beginning of your journey!"
     ];
