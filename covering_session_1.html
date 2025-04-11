@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flashcards</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      user-select: none;
+      cursor: pointer;
+    }
+    .card {
+      font-size: 2em;
+      text-align: center;
+      padding: 40px;
+      border-radius: 12px;
+      max-width: 90%;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="flashcard">Click to begin</div>
+
+  <script>
+    const flashcards = [
+      "Do you know that",
+      "Jesus is Lord",
+      "And there is none like Him"
+    ];
+
+    let index = 0;
+    const card = document.getElementById('flashcard');
+
+    document.body.addEventListener('click', () => {
+      card.textContent = flashcards[index];
+      index = (index + 1) % flashcards.length;
+    });
+  </script>
+</body>
+</html>
