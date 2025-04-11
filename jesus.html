@@ -2,21 +2,183 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Jesus</title>
+  <title>Flashcards | E-Learning by Stevenson Gerard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
     body {
-      background-color: black;
+      background: linear-gradient(to bottom right, #0f0f0f, #2c2c2c);
       color: white;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      font-size: 2em;
+      flex-direction: column;
+      text-align: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+    }
+
+    .top-instructor {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 0.85em;
+      font-weight: bold;
+      color: #f5dfbd;
+      display: none;
+    }
+
+    .avatar {
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      margin-bottom: 30px;
+      object-fit: cover;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.5s ease;
+    }
+
+    .avatar.small {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      margin: 0;
+    }
+
+    .subtitle-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 20px;
+      transition: opacity 0.4s ease;
+    }
+
+    .subtitle {
+      font-size: 1.5em;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      font-family: 'Segoe UI Semibold', 'Segoe UI', sans-serif;
+    }
+
+    .card-container {
+      perspective: 1000px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card {
+      background: white;
+      color: #ebbf7b;
+      border-radius: 20px;
+      padding: 30px 20px;
+      width: 90%;
+      max-width: 500px;
+      font-size: 1.2em;
+      font-weight: 600;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+      transition: transform 0.6s ease-in-out, font-size 0.4s ease-in-out;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      cursor: pointer;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .hint {
+      margin-top: 25px;
+      font-size: 0.95em;
+      color: #f5dfbd;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
+
+    .card:hover {
+      animation: pulse 0.8s ease-in-out;
     }
   </style>
 </head>
 <body>
-  Jesus is Lord!
+  <div class="top-instructor" id="instructor-label">Instructor: The Holy Spirit</div>
+
+  <img id="avatar" src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-edc0-61f7-a6b5-9344ad59092e/raw?se=2025-04-11T18%3A50%3A05Z&sp=r&sv=2024-08-04&sr=b&scid=db1f69f9-12ef-5305-9c63-12a3577db845&skoid=f0c3f613-0f9b-4a8a-a29a-c1a910343ad7&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-11T11%3A47%3A56Z&ske=2025-04-12T11%3A47%3A56Z&sks=b&skv=2024-08-04&sig=QB/N8tPwLZQRD2E0bJQHY8xzoiHgdQzeYUBSBryTI%2BI%3D" alt="Avatar" class="avatar" id="avatar" />
+
+  <div id="subtitles" class="subtitle-container">
+    <div class="subtitle"><span style="color:#f5dfbd">Crafted by:</span> Stevenson Gerard</div>
+    <div class="subtitle"><span style="color:#f5dfbd">Instructor:</span> The Holy Spirit</div>
+  </div>
+
+  <div class="card-container">
+    <div class="card" id="flashcard">Tap to begin</div>
+  </div>
+
+  <div class="hint" id="hint">Tap the card to reveal the next flash 🔄</div>
+
+<script>
+  const card = document.getElementById('flashcard');
+  const avatar = document.getElementById('avatar');
+  const instructorLabel = document.getElementById('instructor-label');
+  const subtitleContainer = document.getElementById('subtitles');
+  const hint = document.getElementById('hint');
+
+  let flashcards = [];
+  let index = 0;
+
+  function updateSlide() {
+    card.style.transform = 'rotateY(180deg)';
+    setTimeout(() => {
+      const content = flashcards[index];
+      card.textContent = content;
+      card.style.transform = 'rotateY(0deg)';
+
+      const isFirst = index === 0;
+      const isLast = index === flashcards.length - 1;
+
+      avatar.classList.toggle('small', !isFirst && !isLast);
+      instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
+      subtitleContainer.style.display = isFirst ? 'flex' : 'none';
+      hint.textContent = isLast ? '🎊 You’ve reached the end.' : 'Tap the card to reveal the next flash 🔄';
+      card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
+
+      index = (index + 1) % flashcards.length;
+    }, 300);
+  }
+
+  card.addEventListener('click', updateSlide);
+
+  // Load flashcards based on filename
+  const pageName = location.pathname.split("/").pop().replace(".html", "") || "index";
+  fetch(`flashcards/${pageName}.json`)
+    .then(res => res.json())
+    .then(data => {
+      // Insert first + last card manually
+      flashcards = [
+        "👋 Welcome, friend!",
+        ...data,
+        "🎉 Thank you for reading! We hope this blessed you."
+      ];
+      card.textContent = flashcards[0]; // show intro
+    })
+    .catch(err => {
+      console.error("Could not load flashcards:", err);
+      card.textContent = "⚠️ Could not load flashcards";
+    });
+</script>
+
+
 </body>
 </html>
