@@ -144,53 +144,33 @@
   let flashcards = [];
   let index = 0;
 
-// ... Inside your script tag (replace your existing `updateSlide()` function with this):
+  function updateSlide() {
+    card.style.transform = 'rotateY(180deg)';
+    setTimeout(() => {
+      const content = flashcards[index];
+      card.textContent = content;
+      card.style.transform = 'rotateY(0deg)';
 
-function updateSlide() {
-  card.style.transform = 'rotateY(180deg)';
-  setTimeout(() => {
-    const content = flashcards[index];
-    card.textContent = content;
-    card.style.transform = 'rotateY(0deg)';
+      const isFirst = index === 0;
+      const isLast = index === flashcards.length - 1;
 
-    const isFirst = index === 0;
-    const isLast = index === flashcards.length - 1;
+      avatar.classList.toggle('small', !isFirst && !isLast);
+      instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
+      subtitleContainer.style.display = isFirst ? 'flex' : 'none';
 
-    avatar.classList.toggle('small', !isFirst && !isLast);
-    instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
-    subtitleContainer.style.display = isFirst ? 'flex' : 'none';
+      if (isLast) {
+        hint.textContent = 'Redirecting to Kingdom tech expansion...';
+        setTimeout(() => {
+          window.location.href = "https://dashboard.givebutter.com/accounts/48223/campaigns/396190";
+        }, 5000);
+      } else {
+        hint.textContent = 'Tap the card to reveal the next flash 🔄';
+        index++;
+      }
 
-    if (isLast) {
-      hint.textContent = 'Redirecting to Kingdom tech expansion...';
-      setTimeout(() => {
-        window.location.href = "https://dashboard.givebutter.com/accounts/48223/campaigns/396190";
-      }, 5000);
-    } else {
-      hint.textContent = 'Tap the card to reveal the next flash 🔄';
-      index++;
-    }
-
-    card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
-  }, 300);
-}
-
-// ...and update the .then(data => {...}) section:
-
-.then(data => {
-  const courseTitle = data[0];
-  const contentSlides = data.slice(1);
-
-  flashcards = [
-    `👋 ${courseTitle}`,
-    ...contentSlides,
-    `🎉 Thank you for reading!\n${courseTitle}.\nI hope it blessed you!`,
-    `💬 Wanna help us build Kingdom tech? 🚀\n\nJJust $5/month gets me more server space — which lets me spread more messages, reach more hearts, and fuel the hearts of man with fire from God 🙌🏾`
-  ];
-
-  card.textContent = flashcards[0];
-})
-
-
+      card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
+    }, 300);
+  }
 
   card.addEventListener('click', updateSlide);
 
@@ -199,18 +179,17 @@ function updateSlide() {
   fetch(`flashcards/${pageName}.json`)
     .then(res => res.json())
     .then(data => {
-      const courseTitle = data[0];        // First row = course title
-      const contentSlides = data.slice(1); // Remove title from flashcard body
+      const courseTitle = data[0];
+      const contentSlides = data.slice(1);
 
       flashcards = [
         `👋 ${courseTitle}`,
         ...contentSlides,
-        `🎉 Thank you for reading!
-        ${courseTitle}. 
-        I hope it blessed you!`
+        `🎉 Thank you for reading!\n${courseTitle}.\nI hope it blessed you!`,
+        `💬 Wanna help us build Kingdom tech? 🚀\n\nJust $5/month gets me more server space — which lets me spread more messages, reach more hearts, and fuel the hearts of man with fire from God 🙌🏾`
       ];
 
-      card.textContent = flashcards[0]; // show first
+      card.textContent = flashcards[0];
     })
     .catch(err => {
       console.error("Could not load flashcards:", err);
