@@ -178,19 +178,22 @@ function updateSlide() {
   const pageName = location.pathname.split("/").pop().replace(".html", "").toLowerCase();
   fetch(`flashcards/${pageName}.json`)
     .then(res => res.json())
-    .then(data => {
-      const courseTitle = data[0];        // First row = course title
-      const contentSlides = data.slice(1); // Remove title from flashcard body
+.then(data => {
+  const courseTitle = data[0];        // First row = course title
+  const contentSlides = data.slice(1); // Remove title from flashcard body
 
-      flashcards = [
-        `👋 ${courseTitle}`,
-        ...contentSlides,
-        `🎉 Thank you for reading!
-        ${courseTitle}. 
-        I hope it blessed you!`
-      ];
+  flashcards = [
+    `👋 ${courseTitle}`,
+    ...contentSlides,
+    `🎉 Thank you for reading!
+    ${courseTitle}. 
+    I hope it blessed you!`
+  ];
 
-      card.textContent = flashcards[0]; // show first
+  card.textContent = flashcards[0]; // show first
+  index = 1; // ensure first click takes you to second card
+})
+
     })
     .catch(err => {
       console.error("Could not load flashcards:", err);
