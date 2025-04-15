@@ -144,59 +144,56 @@
   let flashcards = [];
   let index = 0;
 
-function updateSlide() {
-  card.style.transform = 'rotateY(180deg)';
-  setTimeout(() => {
-    const content = flashcards[index];
-    card.textContent = content;
-    card.style.transform = 'rotateY(0deg)';
+  function updateSlide() {
+    card.style.transform = 'rotateY(180deg)';
+    setTimeout(() => {
+      const content = flashcards[index];
+      card.textContent = content;
+      card.style.transform = 'rotateY(0deg)';
 
-    const isFirst = index === 0;
-    const isLast = index === flashcards.length - 1;
+      const isFirst = index === 0;
+      const isLast = index === flashcards.length - 1;
 
-    avatar.classList.toggle('small', !isFirst && !isLast);
-    instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
-    subtitleContainer.style.display = isFirst ? 'flex' : 'none';
-    hint.textContent = isLast ? '🎊 You’ve reached the end.' : 'Tap the card to reveal the next flash 🔄';
-    card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
+      avatar.classList.toggle('small', !isFirst && !isLast);
+      instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
+      subtitleContainer.style.display = isFirst ? 'flex' : 'none';
+      hint.textContent = isLast ? '🎊 You’ve reached the end.' : 'Tap the card to reveal the next flash 🔄';
+      card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
 
-    // ⬇️ Redirect if user taps after last slide
-    if (index === flashcards.length - 1) {
-      setTimeout(function() {
-        window.location.href = "https://www.youtube.com/@evangeliststevensongerard";
-      }, 3000);
-    } else {
-      index++;
-    }
-  }, 300);
-}
-
+      if (isLast) {
+        setTimeout(function() {
+          window.location.href = "https://www.youtube.com/@evangeliststevensongerard";
+        }, 3000);
+      } else {
+        index++;
+      }
+    }, 300);
+  }
 
   card.addEventListener('click', updateSlide);
 
-  // Load flashcards based on filename
   const pageName = location.pathname.split("/").pop().replace(".html", "").toLowerCase();
   fetch(`flashcards/${pageName}.json`)
     .then(res => res.json())
     .then(data => {
-      const courseTitle = data[0];        // First row = course title
-      const contentSlides = data.slice(1); // Remove title from flashcard body
+      const courseTitle = data[0];
+      const contentSlides = data.slice(1);
 
       flashcards = [
         `👋 ${courseTitle}`,
         ...contentSlides,
-        `🎉 Thank you for reading!
-        ${courseTitle}. 
-        I hope it blessed you!`
+        `🎉 Thank you for reading!\n${courseTitle}.\nI hope it blessed you!`
       ];
 
-      card.textContent = flashcards[0]; // show first
+      card.textContent = flashcards[0];
+      index = 1;
     })
     .catch(err => {
       console.error("Could not load flashcards:", err);
       card.textContent = "⚠️ Could not load flashcards";
     });
 </script>
+
 
 
 </body>
