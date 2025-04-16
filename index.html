@@ -145,21 +145,24 @@
   <script>
     const API_BASE = "https://default-backend-4ga4.onrender.com";
     const REDIRECT_AFTER_SUBSCRIBE = "https://your-redirect-site.com";
-
     fetch(`${API_BASE}/elearn/list`)
-      .then(res => res.json())
-      .then(data => {
-        const courseList = document.getElementById('course-list');
-        data.forEach(course => {
+    .then(res => res.json())
+    .then(data => {
+      const courseList = document.getElementById('course-list');
+      
+      data
+        .filter(course => course.profile_type !== "test")  // ❌ filter out "test"
+        .forEach(course => {
           const div = document.createElement('div');
           div.className = 'course';
           div.innerText = course.title;
           div.onclick = () => {
-            window.location.href = `./flashcards.html?courseId=${course.name_identifier}`;
-          }
+            window.location.href = `./flashcards.html?courseId=${course.name_identifier || course._id}`;
+          };
           courseList.appendChild(div); 
         });
-      });
+    });
+  
 
     function showSubscribe() {
       document.getElementById('subscribe-popup').style.display = 'flex';
