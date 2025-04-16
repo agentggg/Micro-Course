@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jesus | E-Learn by Stevenson Gerard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+    h1 {
+      color: #f5dfbd;
+    }
+    .courses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 30px 0;
+      width: 100%;
+      max-width: 900px;
+    }
+    .course {
+      background: white;
+      color: #000;
+      border-radius: 10px;
+      padding: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .course:hover {
+      background: #f5dfbd;
+      color: black;
+    }
+    .buttons {
+      margin-top: 40px;
+      display: flex;
+      gap: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #f5dfbd;
+      border: none;
+      color: black;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+    .form-box {
+      background: white;
+      color: black;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 90%;
+      animation: pop 0.3s ease-in-out;
+    }
+    .form-box input, .form-box select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .form-box .actions {
+      margin-top: 20px;
+      text-align: right;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+    .shake {
+      animation: shake 0.5s;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 Explore All E-Courses</h1>
+  <div class="courses" id="course-list">
+  </div>
+  <div class="buttons">
+    <button onclick="showSubscribe()">Subscribe</button>
+    <button onclick="showUnsubscribe()">Unsubscribe</button>
+  </div>
+
+  <!-- Subscribe Form -->
+  <div class="popup" id="subscribe-popup">
+    <div class="form-box" id="subscribe-form">
+      <h2>🚀 Ready to grow?</h2>
+      <p style="font-size: 0.9em">Let's get you plugged into the move of God 🔥</p>
+      <input type="text" id="sub-fn" placeholder="First Name">
+      <input type="text" id="sub-ln" placeholder="Last Name">
+      <input type="email" id="sub-email" placeholder="Email">
+      <input type="tel" id="sub-phone" placeholder="Phone Number">
+      <select id="sub-ref">
+        <option value="">How did you hear about us?</option>
+        <option value="Friend">Friend</option>
+        <option value="Church">Church</option>
+        <option value="Instagram">Instagram</option>
+        <option value="Other">Other</option>
+      </select>
+      <div class="actions">
+        <button onclick="submitSubscribe()">✅ Join</button>
+        <button onclick="hidePopup('subscribe-popup')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unsubscribe Form -->
+  <div class="popup" id="unsubscribe-popup">
+    <div class="form-box" id="unsubscribe-form">
+      <h2>Unsubscribe 🥺</h2>
+      <p style="font-size: 0.9em">Sorry to see you go! Can we know why?</p>
+      <input type="email" id="unsub-email" placeholder="Your Email">
+      <label><input type="radio" name="reason" value="Too many emails"> Too many emails</label><br>
+      <label><input type="radio" name="reason" value="Not helpful"> Not helpful</label><br>
+      <label><input type="radio" name="reason" value="Not enough time"> Not enough time</label><br>
+      <label><input type="radio" name="reason" value="Other"> Other</label>
+      <div class="actions">
+        <button onclick="confirmUnsubscribe()">Unsubscribe</button>
+        <button onclick="hidePopup('unsubscribe-popup')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "https://z5w4jw86-3000.use2.devtunnels.ms";
+    const REDIRECT_AFTER_SUBSCRIBE = "https://your-redirect-site.com";
+
+    fetch(`${API_BASE}/elearn/list`)
+      .then(res => res.json())
+      .then(data => {
+        const courseList = document.getElementById('course-list');
+        data.forEach(course => {
+          const div = document.createElement('div');
+          div.className = 'course';
+          div.innerText = course.title;
+          div.onclick = () => {
+            window.location.href = `./flashcards.html?courseId=${course.name_identifier}`;
+          }
+          courseList.appendChild(div); 
+        });
+      });
+
+    function showSubscribe() {
+      document.getElementById('subscribe-popup').style.display = 'flex';
+    }
+
+    function showUnsubscribe() {
+      document.getElementById('unsubscribe-popup').style.display = 'flex';
+    }
+
+    function hidePopup(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function submitSubscribe() {
+      const form = document.getElementById('subscribe-form');
+      const data = {
+        first_name: document.getElementById('sub-fn').value.trim(),
+        last_name: document.getElementById('sub-ln').value.trim(),
+        email: document.getElementById('sub-email').value.trim(),
+        phone: document.getElementById('sub-phone').value.trim(),
+        referral: document.getElementById('sub-ref').value
+      };
+      if (!data.first_name || !data.last_name || !data.email || !data.phone || !data.referral) { 
+        form.classList.add('shake'); 
+        setTimeout(() => form.classList.remove('shake'), 500);
+        alert("😅 Oops! All fields must be filled out.");
+        return;
+      }
+      fetch(`${API_BASE}/elearn/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(() => {
+        window.location.href = REDIRECT_AFTER_SUBSCRIBE;
+      });
+    }
+
+    function confirmUnsubscribe() {
+      const form = document.getElementById('unsubscribe-form');
+      const reason = document.querySelector('input[name="reason"]:checked');
+      const email = document.getElementById('unsub-email').value.trim();
+      if (!reason || !email) {
+        form.classList.add('shake');
+        setTimeout(() => form.classList.remove('shake'), 500);
+        alert("Please complete the form 😬");
+        return;
+      }
+      if (confirm("Would you like to stay and give it a try? You can leave feedback instead ✨")) {
+        return;
+      }
+      fetch(`${API_BASE}/unsubscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, reason: reason.value })
+      }).then(() => {
+        alert("You've been unsubscribed 😢");
+        hidePopup('unsubscribe-popup');
+      });
+    }
+  </script>
+</body>
+</html>
