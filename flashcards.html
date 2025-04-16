@@ -173,7 +173,7 @@
   card.addEventListener('click', updateSlide);
 
   const pageName = location.pathname.split("/").pop().replace(".html", "").toLowerCase();
-  fetch(`flashcards/${courseId}/${courseId}.json`)
+  fetch(`flashcards/${courseId}.json`)
   .then(res => res.json())
   .then(data => {
     const courseTitle = data[0];
