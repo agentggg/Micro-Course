@@ -1,9 +1,3 @@
-<!--
-Adding a redirect to givebutter
-Adding a final default page to go to thank you but subsscribe
-Connecting to node.js backend
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,7 +38,7 @@ Connecting to node.js backend
       display: none;
     }
 
-        .avatar {
+    .avatar {
       width: 250px;
       height: 250px;
       border-radius: 50%;
@@ -110,6 +104,23 @@ Connecting to node.js backend
       color: #f5dfbd;
     }
 
+    .feedback {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .feedback button {
+      font-size: 1.2em;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .like { background: #4caf50; color: white; }
+    .dislike { background: #f44336; color: white; }
+    .neutral { background: #ffc107; color: black; }
+
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.04); }
@@ -122,92 +133,98 @@ Connecting to node.js backend
   </style>
 </head>
 <body>
-    <button onclick="history.back()" style="position:absolute; top:80px; left:20px; background:#f5dfbd; color:black; border:none; padding:10px 16px; border-radius:8px; cursor:pointer;">
+  <button onclick="history.back()" style="position:absolute; top:80px; left:20px; background:#f5dfbd; color:black; border:none; padding:10px 16px; border-radius:8px; cursor:pointer;">
     ⬅️⬅️ Go Back
   </button>
   <div class="top-instructor" id="instructor-label">Instructor: The Holy Spirit</div>
-
-  <img id="avatar" src="stevo.png" alt="Avatar" class="avatar" id="avatar" />
-
+  <img id="avatar" src="stevo.png" alt="Avatar" class="avatar" />
   <div id="subtitles" class="subtitle-container">
     <div class="subtitle"><span style="color:#f5dfbd">Crafted by:</span> Stevenson Gerard</div>
     <div class="subtitle"><span style="color:#f5dfbd">Instructor:</span> The Holy Spirit</div>
   </div>
-
   <div class="card-container">
     <div class="card" id="flashcard">Tap to begin</div>
   </div>
-
   <div class="hint" id="hint">Tap the card to reveal the next flash 🔄</div>
+  <div class="feedback" id="feedback-buttons" style="display:none">
+    <button class="like" onclick="sendFeedback('like')">👍 Helped</button>
+    <button class="dislike" onclick="sendFeedback('dislike')">👎 Didn't Help</button>
+    <button class="neutral" onclick="sendFeedback('neutral')">😐 Kinda</button>
+  </div>
+  <script>
+    const card = document.getElementById('flashcard');
+    const avatar = document.getElementById('avatar');
+    const instructorLabel = document.getElementById('instructor-label');
+    const subtitleContainer = document.getElementById('subtitles');
+    const hint = document.getElementById('hint');
+    const feedback = document.getElementById('feedback-buttons');
+    const API_BASE = 'https://your-backend-url.com';
+    const pageName = location.pathname.split("/").pop().replace(".html", "").toLowerCase();
+    const courseSlug = new URLSearchParams(window.location.search).get('course') || pageName;
+    let flashcards = [];
+    let index = 0;
+    let startTime = Date.now();
 
-<script>
-  const card = document.getElementById('flashcard');
-  const avatar = document.getElementById('avatar');
-  const instructorLabel = document.getElementById('instructor-label');
-  const subtitleContainer = document.getElementById('subtitles');
-  const hint = document.getElementById('hint');
+    function updateSlide() {
+      card.style.transform = 'rotateY(180deg)';
+      setTimeout(() => {
+        const content = flashcards[index];
+        card.textContent = content;
+        card.style.transform = 'rotateY(0deg)';
 
-  let flashcards = [];
-  let index = 0;
+        const isFirst = index === 0;
+        const isLast = index === flashcards.length - 1;
 
-  function updateSlide() {
-    card.style.transform = 'rotateY(180deg)';
-    setTimeout(() => {
-      const content = flashcards[index];
-      card.textContent = content;
-      card.style.transform = 'rotateY(0deg)';
+        avatar.classList.toggle('small', !isFirst && !isLast);
+        instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
+        subtitleContainer.style.display = isFirst ? 'flex' : 'none';
+        hint.textContent = isLast ? '🎊 You’ve reached the end.' : 'Tap the card to reveal the next flash 🔄';
+        card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
 
-      const isFirst = index === 0;
-      const isLast = index === flashcards.length - 1;
+        if (isLast) {
+          feedback.style.display = 'flex';
+          sendAnalytics();
+        } else {
+          feedback.style.display = 'none';
+          index++;
+        }
+      }, 300);
+    }
 
-      avatar.classList.toggle('small', !isFirst && !isLast);
-      instructorLabel.style.display = (!isFirst && !isLast) ? 'block' : 'none';
-      subtitleContainer.style.display = isFirst ? 'flex' : 'none';
+    card.addEventListener('click', updateSlide);
 
-      if (isLast) {
-        hint.innerHTML = `🔥 Tap again to support Kingdom tech`;
-        // Add final click to redirect
-        card.onclick = () => {
-          window.location.href = "https://givebutter.com/VFq4zF";
-        };
-      } else {
-        hint.textContent = 'Tap the card to reveal the next flash 🔄';
-        index++;
-      }
+    fetch(`${API_BASE}/flashcards/${courseSlug}`)
+      .then(res => res.json())
+      .then(data => {
+        const courseTitle = data[0];
+        const contentSlides = data.slice(1);
+        flashcards = [`👋 ${courseTitle}`, ...contentSlides, `🎉 Thank you for reading!\n${courseTitle}.\nI hope it blessed you!`];
+        card.textContent = flashcards[0];
+        index = 1;
+      })
+      .catch(err => {
+        console.error("Could not load flashcards:", err);
+        card.textContent = "⚠️ Could not load flashcards";
+      });
 
-      card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
-    }, 300);
-  }
+    function sendFeedback(type) {
+      fetch(`${API_BASE}/feedback`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ course: courseSlug, cardIndex: index, feedback: type })
+      });
+      card.textContent = '🙏 Thanks for your feedback!';
+      feedback.style.display = 'none';
+    }
 
-  card.addEventListener('click', updateSlide);
-
-  // Load flashcards based on filename
-  const pageName = location.pathname.split("/").pop().replace(".html", "").toLowerCase();
-  fetch(`flashcards/${pageName}.json`)
-    .then(res => res.json())
-    .then(data => {
-      const courseTitle = data[0];
-      const contentSlides = data.slice(1);
-
-  flashcards = [
-  `👋 ${courseTitle}`,
-  ...contentSlides,
-  'Subscribe 😊 for more e-learn content',
-  `🎉 Thank you for reading!\n${courseTitle}.\nI hope it blessed you!`,
-  `💬 Wanna help me build Kingdom tech? 🚀 Just $5/month gets me more server space — which lets me impact more people, and fuel the hearts of man with fire from God 🙌🏾`
-];
-
-
-
-      card.textContent = flashcards[0];
-    })
-    .catch(err => {
-      console.error("Could not load flashcards:", err);
-      card.textContent = "⚠️ Could not load flashcards";
-    });
-</script>
-
-
-
+    function sendAnalytics() {
+      const duration = Math.floor((Date.now() - startTime) / 1000);
+      fetch(`${API_BASE}/analytics`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ course: courseSlug, visitedAt: new Date().toISOString(), duration })
+      });
+    }
+  </script>
 </body>
 </html>

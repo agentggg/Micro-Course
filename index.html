@@ -142,16 +142,15 @@
     </div>
   </div>
 
-  <script>
-    const API_BASE = "https://default-backend-4ga4.onrender.com";
-    const REDIRECT_AFTER_SUBSCRIBE = "https://your-redirect-site.com";
-    fetch(`${API_BASE}/elearn/list`)
+    <script src="./config.js"></script>
+    <script>
+    fetch(`${CONFIG.API_BASE}/elearn/list`)
     .then(res => res.json())
     .then(data => {
       const courseList = document.getElementById('course-list');
       
       data
-        .filter(course => course.profile_type !== "test")  // ❌ filter out "test"
+        .filter(course => course.profile_type !== "test") 
         .forEach(course => {
           const div = document.createElement('div');
           div.className = 'course';
@@ -163,6 +162,7 @@
         });
     });
   
+
 
     function showSubscribe() {
       document.getElementById('subscribe-popup').style.display = 'flex';
@@ -191,7 +191,7 @@
         alert("😅 Oops! All fields must be filled out.");
         return;
       }
-      fetch(`${API_BASE}/elearn/subscribe`, {
+      fetch(`${CONFIG.API_BASE}/elearn/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -213,7 +213,7 @@
       if (confirm("Would you like to stay and give it a try? You can leave feedback instead ✨")) {
         return;
       }
-      fetch(`${API_BASE}/unsubscribe`, {
+      fetch(`${CONFIG.API_BASE}/unsubscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, reason: reason.value })
