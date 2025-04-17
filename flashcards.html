@@ -355,11 +355,23 @@
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
-      }).then(() => {
-        window.location.href = CONFIG.REDIRECT_AFTER_SUBSCRIBE;
+      })
+      .then(async response => {
+        if (!response.ok) {
+          const errorData = await response.json();
+          showPopupError(errorData.error || 'An unexpected error occurred.');
+          throw new Error(errorData.error);
+        } else {
+          window.location.href = CONFIG.REDIRECT_AFTER_SUBSCRIBE;
+        }
+      })
+      .catch(err => {
+        console.error('❌ Subscription error:', err);
       });
     }
-  
+       
+
+
     function sendFeedback(type) {
       fetch(`${CONFIG.API_BASE}/elearn/feedback`, {
         method: 'POST',
@@ -432,6 +444,32 @@
       }
     });
   
+    function showPopupError(message) {
+      const errorDiv = document.createElement('div');
+      errorDiv.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: #dc3545;
+          color: white;
+          padding: 15px 20px;
+          border-radius: 8px;
+          font-weight: bold;
+          box-shadow: 0 0 10px rgba(0,0,0,0.3);
+          z-index: 9999;
+        ">
+          ❌ ${message}
+        </div>
+      `;
+      document.body.appendChild(errorDiv);
+      setTimeout(() => {
+        errorDiv.remove();
+      }, 4000);
+    }
+    
+  
+
     fetch(`${CONFIG.API_BASE}/elearn/get_course/${courseId}`)
       .then(res => res.json())
       .then(data => {
