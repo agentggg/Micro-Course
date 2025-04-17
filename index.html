@@ -105,8 +105,8 @@
   <!-- Subscribe Form -->
   <div class="popup" id="subscribe-popup">
     <div class="form-box" id="subscribe-form">
-      <h2>🚀 Ready to grow?</h2>
-      <p style="font-size: 0.9em">Let's get you plugged into the move of God 🔥</p>
+      <h2>Kingdom Tech Expansion 🚀🚀</h2>
+      <p style="font-size: 0.9em">Let's get you plugged into the Kingdom Tech Space 🔥</p>
       <input type="text" id="sub-fn" placeholder="First Name">
       <input type="text" id="sub-ln" placeholder="Last Name">
       <input type="email" id="sub-email" placeholder="Email">
@@ -114,8 +114,9 @@
       <select id="sub-ref">
         <option value="">How did you hear about us?</option>
         <option value="Friend">Friend</option>
-        <option value="Church">Church</option>
-        <option value="Instagram">Instagram</option>
+        <option value="Church">Event</option>
+        <option value="Instagram">Social Media</option>
+        <option value="Instagram">Text</option>
         <option value="Other">Other</option>
       </select>
       <div class="actions">
@@ -156,7 +157,7 @@
           div.className = 'course';
           div.innerText = course.title;
           div.onclick = () => {
-            window.location.href = `./flashcards.html?courseId=${course.name_identifier || course._id}`;
+            window.location.href = `./flashcards.html?courseId=${course.name_identifier || course._id}&database_id=${course._id}`;
           };
           courseList.appendChild(div); 
         });
@@ -192,11 +193,11 @@
         return;
       }
       fetch(`${CONFIG.API_BASE}/elearn/subscribe`, {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       }).then(() => {
-        window.location.href = REDIRECT_AFTER_SUBSCRIBE;
+        window.location.href = CONFIG.REDIRECT_AFTER_SUBSCRIBE;
       });
     }
 

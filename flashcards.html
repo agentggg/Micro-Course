@@ -111,7 +111,8 @@
     <!-- <div id="share-container" class="my-3 d-none text-center">
       <button class="btn btn-success" onclick="shareCourse()">📤 Share This Mini Course Somewhere</button>
     </div> -->
-    
+    <div id="progress" class="text-warning my-2" style="font-weight: bold;"></div>
+
   </div> 
  
   <script src="./config.js"></script>
@@ -119,7 +120,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('feedback-buttons').classList.add('d-none');
     });
-    
+ 
   
     const card = document.getElementById('flashcard');
     const avatar = document.getElementById('avatar');
@@ -128,12 +129,16 @@
     const hint = document.getElementById('hint');
     const feedback = document.getElementById('feedback-buttons');
     const courseId = new URLSearchParams(window.location.search).get('courseId');
+    const database_id = new URLSearchParams(window.location.search).get('database_id');
     let flashcards = [];
     let index = 0;
     let courseSlug = courseId;
     let startTime = Date.now();
   
     function updateSlide() {
+      const displayIndex = index + 1 > flashcards.length ? flashcards.length : index + 1;
+      document.getElementById('progress').textContent = `${displayIndex}/${flashcards.length}`;
+  
       card.className = "card";
     
       // Always hide feedback buttons first
@@ -168,7 +173,8 @@
       }, 100);
     }
     
-  
+    document.getElementById('progress').textContent = `1/${flashcards.length}`;
+
     card.addEventListener('click', () => {
       if (index < flashcards.length) {
         updateSlide();
@@ -230,10 +236,10 @@
         .then(res => res.json())
         .then(ipData => {
           fetch(`${CONFIG.API_BASE}/elearn/analytics`, {
-            method: 'POST',
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              course: courseSlug,
+              course: database_id,
               visitedAt: new Date().toISOString(),
               duration,
               userAgent,
