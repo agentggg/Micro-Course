@@ -334,7 +334,44 @@
         window.location.href = "index.html";
       }
     }
-  
+    function saveFormToLocalStorage() {
+      const data = {
+        title: document.getElementById('title').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        name_identifier: document.getElementById('name_identifier').value.trim(),
+        profile_type: document.getElementById('profile_type').value,
+        points: [...document.querySelectorAll('#array-fields textarea')].map(t => t.value.trim())
+      };
+      localStorage.setItem('courseFormData', JSON.stringify(data));
+    }
+    
+    function loadFormFromLocalStorage() {
+      const saved = localStorage.getItem('courseFormData');
+      if (!saved) return;
+    
+      const data = JSON.parse(saved);
+      document.getElementById('title').value = data.title || '';
+      document.getElementById('description').value = data.description || '';
+      document.getElementById('name_identifier').value = data.name_identifier || '';
+      document.getElementById('profile_type').value = data.profile_type || '';
+    
+      const container = document.getElementById('array-fields');
+      container.innerHTML = '';
+      if (data.points && data.points.length > 0) {
+        data.points.forEach(point => {
+          const div = document.createElement('div');
+          div.className = 'input-group mb-2';
+          div.innerHTML = `
+            <textarea class="form-control" placeholder="Enter point..." rows="4">${point}</textarea>
+            <button class="btn btn-outline-secondary" onclick="addArrayField(this.parentElement)">➕</button>
+            <button class="btn btn-outline-danger" onclick="this.parentElement.remove()">❌</button>`;
+          container.appendChild(div);
+        });
+      } else {
+        addArrayField();
+      }
+    }
+    
     function submitSubscribe() {
       const data = {
         first_name: document.getElementById('sub-fn').value.trim(),

@@ -75,12 +75,62 @@
     if (USERNAME !== "agentofgod") {
       document.getElementById('auth-check').innerHTML = "⛔ Access Denied. Admins only.";
     } else {
+      ['title', 'description', 'name_identifier', 'profile_type'].forEach(id => {
+        document.getElementById(id).addEventListener('input', saveFormToLocalStorage);
+      });
+      document.getElementById('array-fields').addEventListener('input', saveFormToLocalStorage);      
       document.getElementById('auth-check').style.display = 'none';
       document.getElementById('crud-interface').style.display = 'block';
+      loadFormFromLocalStorage();
       loadCourses();
       addArrayField();
     }
 
+    function saveFormToLocalStorage() {
+      const data = {
+        title: document.getElementById('title').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        name_identifier: document.getElementById('name_identifier').value.trim(),
+        profile_type: document.getElementById('profile_type').value,
+        points: [...document.querySelectorAll('#array-fields textarea')].map(t => t.value.trim())
+      };
+      localStorage.setItem('courseFormData', JSON.stringify(data));
+    
+      const toast = document.getElementById('draft-status');
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 1200);
+    }
+    
+    
+    function loadFormFromLocalStorage() {
+      const saved = localStorage.getItem('courseFormData');
+      if (!saved) return;
+    
+      const data = JSON.parse(saved);
+      document.getElementById('title').value = data.title || '';
+      document.getElementById('description').value = data.description || '';
+      document.getElementById('name_identifier').value = data.name_identifier || '';
+      document.getElementById('profile_type').value = data.profile_type || '';
+    
+      const container = document.getElementById('array-fields');
+      container.innerHTML = '';
+      if (data.points && data.points.length > 0) {
+        data.points.forEach(point => {
+          const div = document.createElement('div');
+          div.className = 'input-group mb-2';
+          div.innerHTML = `
+            <textarea class="form-control" placeholder="Enter point..." rows="4">${point}</textarea>
+            <button class="btn btn-outline-secondary" onclick="addArrayField(this.parentElement)">➕</button>
+            <button class="btn btn-outline-danger" onclick="this.parentElement.remove()">❌</button>`;
+          container.appendChild(div);
+        });
+      } else {
+        addArrayField();
+      }
+    }
+    
     let allCourses = [];
 
     function loadCourses() {
@@ -194,6 +244,7 @@
         body: JSON.stringify(data)
       }).then(() => {
         alert("✅ Course submitted successfully!");
+        localStorage.removeItem('courseFormData');
         document.getElementById('title').value = '';
         document.getElementById('description').value = '';
         document.getElementById('profile_type').value = '';
@@ -215,5 +266,21 @@
       document.getElementById(cardId).classList.toggle('show');
     }
   </script>
+  <div id="draft-status" style="
+  display:none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  font-size: 0.9em;
+  z-index: 9999;
+">
+  💾 Draft saved!
+</div>
+
 </body>
 </html>
