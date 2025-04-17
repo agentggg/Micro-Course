@@ -43,6 +43,7 @@
         cursor: pointer;
         white-space: pre-wrap;
         word-break: break-word;
+        max-width: 600px; 
       }
   
       .card:hover {
@@ -92,6 +93,13 @@
         transform: translateY(0);
       }
   
+      .card.single-line {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 1rem;
+      }
+      
       .popup {
         display: none;
         position: fixed;
@@ -254,31 +262,31 @@
       const content = flashcards[index];
       const isFirst = index === 0;
       const isLast = index === flashcards.length - 1;
-  
+    
       progress.textContent = `${index + 1}/${flashcards.length}`;
-      card.className = "card";
+      card.className = isFirst ? "card single-line" : "card";
       card.textContent = content;
-  
+    
       toggleVisibility(instructorLabel, !isFirst && !isLast);
       toggleVisibility(subtitleContainer, isFirst);
       toggleVisibility(hint, !isLast);
       subscribeButton.classList.remove('show');
-  
+    
       avatar.classList.toggle('w-26', !isFirst && !isLast);
       hint.textContent = 'Tap the card to reveal the next flash 🔄';
-      card.style.fontSize = content.length > 180 ? '1em' : '1.2em';
-  
+      card.style.fontSize = content.length > 180 && !isFirst ? '1em' : isFirst ? '1rem' : '1.2em';
+    
       if (isLast) {
         showSubscribeButton();
         sendAnalytics();
         feedback.classList.remove('d-none');
-      }
-      else{
+      } else {
         feedback.classList.add('d-none');
       }
       index = Math.min(index + 1, flashcards.length - 1);
     }
-  
+
+    
     function showSubscribeButton() {
       subscribeButton.classList.add('show');
     }
