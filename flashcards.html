@@ -1,33 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-      <meta http-equiv="Pragma" content="no-cache">
-      <meta http-equiv="Expires" content="0">
-      
-      <title>E-Learn | Stevenson Gerard</title>
-      <meta name="description" content="E-Learn by Stevenson Gerard. Exploring Jesus in Today Powered By Tech & Faith.">
-    
-      <!-- Open Graph (Facebook, LinkedIn, Messenger) -->
-      <meta property="og:type" content="website">
-      <meta property="og:title" content="E-Learn">
-      <meta property="og:description" content="Exploring Jesus in Today">
-      <meta property="og:image" content="stevo.png">
-      <meta property="og:url" content="https://e-learn.stevensongerard.tech/index.html">
-    
-      <!-- Twitter Card -->
-      <meta name="twitter:card" content="summary_large_image">
-      <meta name="twitter:title" content="E-Learn">
-      <meta name="twitter:description" content="Exploring Jesus in Today">
-      <meta name="twitter:image" content="stevo.png">
-      <meta name="twitter:url" content="https://e-learn.stevensongerard.tech/index.html">
-    
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Micro | E-Learning by Stevenson Gerard</title>
+    <meta property="og:title" content="E-learn">
+    <meta property="og:description" content="Exploring Jesus in Today">
+    <meta property="og:image" content="stevo.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
       body {
         background: linear-gradient(to bottom right, #0f0f0f, #2c2c2c);
@@ -351,44 +334,7 @@
         window.location.href = "index.html";
       }
     }
-    function saveFormToLocalStorage() {
-      const data = {
-        title: document.getElementById('title').value.trim(),
-        description: document.getElementById('description').value.trim(),
-        name_identifier: document.getElementById('name_identifier').value.trim(),
-        profile_type: document.getElementById('profile_type').value,
-        points: [...document.querySelectorAll('#array-fields textarea')].map(t => t.value.trim())
-      };
-      localStorage.setItem('courseFormData', JSON.stringify(data));
-    }
-    
-    function loadFormFromLocalStorage() {
-      const saved = localStorage.getItem('courseFormData');
-      if (!saved) return;
-    
-      const data = JSON.parse(saved);
-      document.getElementById('title').value = data.title || '';
-      document.getElementById('description').value = data.description || '';
-      document.getElementById('name_identifier').value = data.name_identifier || '';
-      document.getElementById('profile_type').value = data.profile_type || '';
-    
-      const container = document.getElementById('array-fields');
-      container.innerHTML = '';
-      if (data.points && data.points.length > 0) {
-        data.points.forEach(point => {
-          const div = document.createElement('div');
-          div.className = 'input-group mb-2';
-          div.innerHTML = `
-            <textarea class="form-control" placeholder="Enter point..." rows="4">${point}</textarea>
-            <button class="btn btn-outline-secondary" onclick="addArrayField(this.parentElement)">➕</button>
-            <button class="btn btn-outline-danger" onclick="this.parentElement.remove()">❌</button>`;
-          container.appendChild(div);
-        });
-      } else {
-        addArrayField();
-      }
-    }
-    
+  
     function submitSubscribe() {
       const data = {
         first_name: document.getElementById('sub-fn').value.trim(),
@@ -525,20 +471,18 @@
   
 
     fetch(`${CONFIG.API_BASE}/elearn/get_course/${courseId}`)
-    .then(res => res.json())
-    .then(data => {
-      const courseTitle = data.cards[0];
-      const contentSlides = data.cards.slice(1);
-  
-      flashcards = [
-        `👋 ${courseTitle}`,
-        ...contentSlides,
-        `🎉 Thank you for reading!\n${decodeURIComponent(courseTitle)}.\nI hope it blessed you!`
-      ];
-      index = 0;
-      updateSlide();
-    });
-  
+      .then(res => res.json())
+      .then(data => {
+        const courseTitle = data.cards[0];
+        const contentSlides = data.cards.slice(1);
+        flashcards = [
+          `👋 ${courseTitle}`,
+          ...contentSlides,
+          `🎉 Thank you for reading!\n${decodeURIComponent(courseTitle)}.\nI hope it blessed you!`
+        ];
+        index = 0;
+        updateSlide();
+      });
   </script>
 </body>
 </html>
