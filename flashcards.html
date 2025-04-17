@@ -508,18 +508,24 @@
   
 
     fetch(`${CONFIG.API_BASE}/elearn/get_course/${courseId}`)
-      .then(res => res.json())
-      .then(data => {
-        const courseTitle = data.cards[0];
-        const contentSlides = data.cards.slice(1);
-        flashcards = [
-          `👋 ${courseTitle}`,
-          ...contentSlides,
-          `🎉 Thank you for reading!\n${decodeURIComponent(courseTitle)}.\nI hope it blessed you!`
-        ];
-        index = 0;
-        updateSlide();
-      });
+    .then(res => res.json())
+    .then(data => {
+      const courseTitle = data.cards[0];
+      const contentSlides = data.cards.slice(1);
+  
+      // 🔥 Dynamically update title & meta
+      document.title = `${courseTitle} | E-Learning by Stevenson Gerard`;
+      document.querySelector('meta[property="og:title"]').setAttribute("content", courseTitle);
+  
+      flashcards = [
+        `👋 ${courseTitle}`,
+        ...contentSlides,
+        `🎉 Thank you for reading!\n${decodeURIComponent(courseTitle)}.\nI hope it blessed you!`
+      ];
+      index = 0;
+      updateSlide();
+    });
+  
   </script>
 </body>
 </html>
