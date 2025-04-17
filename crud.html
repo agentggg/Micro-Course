@@ -4,206 +4,195 @@
   <meta charset="UTF-8">
   <title>Manage Courses | E-Learn Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #111;
-      color: white;
-      padding: 30px;
-    }
-    h1 {
-      color: #f5dfbd;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      padding: 10px;
-      border: 1px solid #333;
-      text-align: left;
-    }
-    input, button, select {
-      padding: 8px;
-      border-radius: 5px;
-      border: none;
-      margin: 5px 0;
-    }
-    input[type="text"] {
-      width: 100%;
-    }
-    .form-inline {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .form-inline input, .form-inline select {
-      flex: 1;
-    }
-    .btn {
-      background: #f5dfbd;
-      color: black;
-      cursor: pointer;
-    }
-    .btn.danger {
-      background: #e74c3c;
-    }
-    .restricted {
-      text-align: center;
-      margin-top: 100px;
-      font-size: 1.2em;
-      color: #f5dfbd;
-    }
-    .array-group {
-      margin-top: 20px;
-    }
-    .array-group input {
-      width: calc(100% - 40px);
-      margin-bottom: 10px;
-    }
-    .array-entry {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
+    body { background: #111; color: white; }
+    h1 { color: #f5dfbd; }
+    .btn-custom { background: #f5dfbd; color: black; }
+    .btn-danger { background: #e74c3c; }
+    .restricted { text-align: center; margin-top: 100px; font-size: 1.2em; color: #f5dfbd; }
+    input, select, button { margin-bottom: 10px; }
   </style>
 </head>
-<body>
-  <h1>📖 Course Manager</h1>
-  <div id="auth-check" class="restricted">Verifying access...</div>
-  <div id="crud-interface" style="display:none;">
-    <div class="form-inline">
-      <input type="text" id="title" placeholder="Course Title">
-      <input type="text" id="description" placeholder="Description">
-      <input type="text" id="name_identifier" placeholder="Name Identifier">
-      <select id="profile_type">
-        <option value="">Select Profile Type</option>
-        <option value="private">Private</option>
-        <option value="common">Common</option>
-        <option value="prophet">Prophet</option>
-        <option value="test">Test</option>
-      </select>
-    </div>
-    <div class="array-group" id="array-section">
-      <h3>Add Teaching Points ✍️</h3>
-      <div id="array-fields"></div>
-      <button class="btn" onclick="addArrayField()">➕ Add Line</button>
-      <button class="btn" onclick="submitCourse()">✅ Done</button>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Slug</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="course-table">
-        <!-- Dynamic rows -->
-      </tbody>
-    </table>
+<body class="p-4">
+
+  <h1 class="text-center mb-4">📖 Course Manager</h1>
+  
+  <div class="container mb-4">
+    <input type="text" id="searchInput" class="form-control" placeholder="🔍 Search by title or description..." oninput="filterCourses()">
   </div>
 
-<script src="./config.js"></script>
-<script>
-const USERNAME = prompt("Enter username to access course manager:");
+  <div id="auth-check" class="restricted">Verifying access...</div>
 
-if (USERNAME !== "agentofgod") {
-  document.getElementById('auth-check').innerHTML = "⛔ Access Denied. Admins only.";
-} else {
-  document.getElementById('auth-check').style.display = 'none';
-  document.getElementById('crud-interface').style.display = 'block';
-  loadCourses();
-  addArrayField();
-}
+  <div id="crud-interface" style="display:none;">
+    <div class="container mb-4">
+      <div class="row g-2">
+        <div class="col-md-3"><input type="text" class="form-control" id="title" placeholder="Course Title"></div>
+        <div class="col-md-3"><input type="text" class="form-control" id="description" placeholder="Description"></div>
+        <div class="col-md-3"><input type="text" class="form-control" id="name_identifier" placeholder="Course Identifier"></div>
+        <div class="col-md-3">
+          <select id="profile_type" class="form-select">
+            <option value="">Select Profile Type</option>
+            <option value="private">Private</option>
+            <option value="common">Common</option>
+            <option value="prophet">Prophet</option>
+            <option value="test">Test</option>
+          </select>
+        </div>
+      </div>
+    </div>
 
-function loadCourses() {
-  fetch(`${CONFIG.API_BASE}/courses`)
-    .then(res => res.json())
-    .then(data => {
-      const table = document.getElementById('course-table');
-      table.innerHTML = '';
-      data.forEach(course => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td><input type="text" value="${course.title}" onchange="updateCourse('${course.slug}', 'title', this.value)"></td>
-          <td><input type="text" value="${course.description}" onchange="updateCourse('${course.slug}', 'description', this.value)"></td>
-          <td>${course.slug}</td>
-          <td>
-            <button class="btn danger" onclick="deleteCourse('${course.slug}')">Delete</button>
-          </td>
+    <div class="container mb-4">
+      <h4>Add Teaching Points ✍️</h4>
+      <div id="array-fields" class="mb-3"></div>
+      <button class="btn btn-custom me-2" onclick="addArrayField()">➕ Add Line</button>
+      <button class="btn btn-success" onclick="submitCourse()">✅ Done</button>
+    </div>
+
+    <div class="container">
+      <div class="row" id="course-card-container"></div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script>
+    const USERNAME = prompt("Enter username to access course manager:");
+    if (USERNAME !== "agentofgod") {
+      document.getElementById('auth-check').innerHTML = "⛔ Access Denied. Admins only.";
+    } else {
+      document.getElementById('auth-check').style.display = 'none';
+      document.getElementById('crud-interface').style.display = 'block';
+      loadCourses();
+      addArrayField();
+    }
+
+    let allCourses = [];
+
+    function loadCourses() {
+      fetch(`${CONFIG.API_BASE}/elearn/list`)
+        .then(res => res.json())
+        .then(data => {
+          allCourses = data;
+          renderCourses(data);
+        });
+    }
+
+    function filterCourses() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = allCourses.filter(course =>
+        course.name_identifier?.toLowerCase().startsWith(searchTerm) ||
+        course.description?.toLowerCase().startsWith(searchTerm)
+      );
+      renderCourses(filtered);
+    }
+
+    function renderCourses(courses) {
+      const container = document.getElementById('course-card-container');
+      container.innerHTML = '';
+
+      courses.forEach((course, index) => {
+        const cardId = `card-${index}`;
+        const card = document.createElement('div');
+        card.className = 'col-md-6 col-lg-4 mb-4';
+
+        card.innerHTML = `
+          <div class="card h-100 text-dark">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span><strong>📘 ${course.name_identifier || 'No Identifier'}</strong></span>
+              <button class="btn btn-sm btn-primary" onclick="toggleCard('${cardId}')">➕</button>
+            </div>
+            <div class="card-body collapse" id="${cardId}">
+              <h6 class="mt-2">📝 Title</h6>
+              <input type="text" class="form-control mb-2" value="${course.title || ''}" onchange="editCourse('${course._id}', 'title', this.value)">
+
+              <h6 class="mt-2">🔗 Profile Type</h6>
+              <select class="form-select mb-2" onchange="editCourse('${course._id}', 'profile_type', this.value)">
+                <option ${course.profile_type === 'private' ? 'selected' : ''}>private</option>
+                <option ${course.profile_type === 'common' ? 'selected' : ''}>common</option>
+                <option ${course.profile_type === 'prophet' ? 'selected' : ''}>prophet</option>
+                <option ${course.profile_type === 'test' ? 'selected' : ''}>test</option>
+              </select>
+
+              <button class="btn btn-danger btn-sm mt-3" onclick="deleteCourse('${course._id}')">❌ Delete</button>
+            </div>
+          </div>
         `;
-        table.appendChild(row);
+        container.appendChild(card);
       });
-    });
-}
+    }
 
-function addArrayField() {
-  const div = document.createElement('div');
-  div.className = 'array-entry';
-  div.innerHTML = `
-    <input type="text" placeholder="Enter point...">
-    <button onclick="this.parentElement.remove()">❌</button>
-  `;
-  document.getElementById('array-fields').appendChild(div);
-}
+    function editCourse(courseId, field, value) {
+      const course = allCourses.find(c => c._id === courseId);
+      if (!course) return;
 
-function submitCourse() {
-  const title = document.getElementById('title').value.trim();
-  const description = document.getElementById('description').value.trim();
-  const profile_type = document.getElementById('profile_type').value;
-  const name_identifier = document.getElementById('name_identifier').value;
-  const createdAt = new Date().toLocaleString();
-  const arrayLines = [...document.querySelectorAll('#array-fields input')].map(input => input.value.trim()).filter(Boolean);
+      const updated = { ...course, [field]: value };
+      fetch(`${CONFIG.API_BASE}/elearn/list/${courseId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      }).then(() => loadCourses());
+    }
 
-  if (!title || !description || !profile_type || arrayLines.length === 0) {
-    alert("🚨 Please fill all fields and add at least one teaching point.");
-    return;
-  }
+    function addArrayField() {
+      const div = document.createElement('div');
+      div.className = 'input-group mb-2';
+      div.innerHTML = `
+        <textarea class="form-control" placeholder="Enter point..." rows="4"></textarea>
+        <button class="btn btn-outline-danger" onclick="this.parentElement.remove()">❌</button>
+      `;
+      document.getElementById('array-fields').appendChild(div);
+    }
 
-  const data = {
-    title,
-    description,
-    profile_type,
-    createdAt,
-    points: arrayLines,
-    name_identifier
-  };
+    function submitCourse() {
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const profile_type = document.getElementById('profile_type').value;
+      const name_identifier = document.getElementById('name_identifier').value;
+      const createdAt = new Date().toISOString();
+      const points = [...document.querySelectorAll('#array-fields textarea')]
+        .map(input => input.value.trim()).filter(Boolean);
 
-  fetch(`${CONFIG.API_BASE}/elearn/new_course`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  }).then(() => {
-    alert("✅ Course submitted successfully!");
-    loadCourses();
-    document.getElementById('title').value = '';
-    document.getElementById('description').value = '';
-    document.getElementById('profile_type').value = '';
-    document.getElementById('name_identifier').value = '';
-    document.getElementById('array-fields').innerHTML = '';
-    addArrayField();
-  });
-}
+      if (!title || !description || !profile_type || points.length === 0) {
+        alert("🚨 Please fill all fields and add at least one teaching point.");
+        return;
+      }
 
-function updateCourse(slug, field, value) {
-  fetch(`${CONFIG.API_BASE}/elearn/list/${slug}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ [field]: value })
-  }).then(() => loadCourses());
-}
+      const data = {
+        title,
+        description,
+        profile_type,
+        createdAt,
+        points,
+        name_identifier
+      };
 
-function deleteCourse(slug) {
-  if (!confirm("Are you sure you want to delete this course?")) return;
-  fetch(`${CONFIG.API_BASE}/elearn/courses/${slug}`, {
-    method: 'DELETE' })
-  .then(() => loadCourses());
-}
-</script>
+      fetch(`${CONFIG.API_BASE}/elearn/new_course`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(() => {
+        alert("✅ Course submitted successfully!");
+        document.getElementById('title').value = '';
+        document.getElementById('description').value = '';
+        document.getElementById('profile_type').value = '';
+        document.getElementById('name_identifier').value = '';
+        document.getElementById('array-fields').innerHTML = '';
+        addArrayField();
+        loadCourses();
+      });
+    }
+
+    function deleteCourse(courseId) {
+      if (!confirm("Are you sure you want to delete this course?")) return;
+      fetch(`${CONFIG.API_BASE}/elearn/courses/${courseId}`, {
+        method: 'DELETE'
+      }).then(() => loadCourses());
+    }
+
+    function toggleCard(cardId) {
+      const card = document.getElementById(cardId);
+      card.classList.toggle('show');
+    }
+  </script>
 </body>
 </html>
