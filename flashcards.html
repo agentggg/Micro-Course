@@ -10,6 +10,23 @@
     <meta property="og:title" content="E-learn">
     <meta property="og:description" content="Exploring Jesus in Today">
     <meta property="og:image" content="stevo.png">
+    <!-- General SEO -->
+    <meta name="description" content="E-learn by Stevenson Gerard. Exploring Jesus in Today.">
+
+    <!-- Open Graph (Facebook, LinkedIn, Messenger) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="E-learn">
+    <meta property="og:description" content="Exploring Jesus in Today">
+    <meta property="og:image" content="stevo.png">
+    <meta property="og:url" content="https://yourdomain.com">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="E-learn">
+    <meta name="twitter:description" content="Exploring Jesus in Today">
+    <meta name="twitter:image" content="stevo.png">
+    <meta name="twitter:url" content="https://yourdomain.com">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
       body {
@@ -516,7 +533,28 @@
       // 🔥 Dynamically update title & meta
       document.title = `${courseTitle} | E-Learning by Stevenson Gerard`;
       document.querySelector('meta[property="og:title"]').setAttribute("content", courseTitle);
-  
+      // Update dynamic title and meta tags
+
+      const ogTitle = `${courseTitle} | E-Learning by Stevenson Gerard`;
+      const ogDescription = `Dive into "${courseTitle}" and grow spiritually. Powered by the Holy Spirit 🔥`;
+      const ogImage = 'https://yourdomain.com/stevo.png'; // Replace with your real image path or use Cloudinary
+      const ogUrl = window.location.href;
+
+      // Facebook / Messenger / LinkedIn (Open Graph)
+      document.querySelector('meta[property="og:title"]')?.setAttribute("content", ogTitle);
+      document.querySelector('meta[property="og:description"]')?.setAttribute("content", ogDescription);
+      document.querySelector('meta[property="og:image"]')?.setAttribute("content", ogImage);
+      document.querySelector('meta[property="og:url"]')?.setAttribute("content", ogUrl);
+
+      // Twitter
+      document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", ogTitle);
+      document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", ogDescription);
+      document.querySelector('meta[name="twitter:image"]')?.setAttribute("content", ogImage);
+      document.querySelector('meta[name="twitter:url"]')?.setAttribute("content", ogUrl);
+
+      // General SEO
+      document.querySelector('meta[name="description"]')?.setAttribute("content", ogDescription);
+
       flashcards = [
         `👋 ${courseTitle}`,
         ...contentSlides,
