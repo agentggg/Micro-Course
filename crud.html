@@ -61,7 +61,7 @@
   <script>
     let activeInsertCard = null;
     const USERNAME = prompt("Enter username to access course manager:");
-    if (USERNAME !== "agentofgod") {
+    if (USERNAME !== CONFIG.USERNAME) {
       document.getElementById('auth-check').innerHTML = "⛔ Access Denied. Admins only.";
     } else {
       ['title', 'description', 'name_identifier', 'profile_type'].forEach(id => {
