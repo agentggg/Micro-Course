@@ -83,15 +83,18 @@
       #subscribe-button-popup {
         display: none;
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(-10px);
         transition: opacity 0.4s ease, transform 0.4s ease;
+        justify-content: center;
+        margin-top: 15px;
       }
-  
+      
       #subscribe-button-popup.show {
         display: flex;
         opacity: 1;
         transform: translateY(0);
       }
+      
   
       .card.single-line {
         overflow: hidden;
@@ -188,7 +191,11 @@
       <h5 class="text-warning">Crafted by: Stevenson Gerard</h5>
       <h5 class="text-warning">Instructor: The Holy Spirit</h5>
     </div>
-
+    <div class="d-flex justify-content-center" id="subscribe-button-popup">
+      <button onclick="showSubscribe()" class="btn btn-primary btn-sm text-dark fw-bold rounded">
+        <span class="text-light h5">👨🏽‍💻 Subscribe 📲 to Kingdom Tech</span>
+      </button>
+    </div>
     <div class="card-container">
       <div class="card" id="flashcard"><strong>Tap to begin</strong></div>
     </div>
@@ -222,9 +229,6 @@
       <button onclick="hidePopup('subscribe-popup')">Cancel</button>
     </div>
   </div>
-</div>
-<div class="buttons d-flex justify-content-around" id="subscribe-button-popup">
-  <button onclick="showSubscribe()" class="border border-warning rounded d-flex justify-content-around align-items-center text-light bg-dark"><span class="display-2 d-flex justify-content-around">👨🏽‍💻</span> Subscribe</button>
 </div>
   </div> 
  

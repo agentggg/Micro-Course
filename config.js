@@ -4,4 +4,4 @@ const CONFIG = {
     // API_BASE: "http://localhost:3000",
     REDIRECT_AFTER_SUBSCRIBE: "https://www.youtube.com/@evangeliststevensongerard/shorts",
     USERNAME: "cisco4us"
-}; 
+};
