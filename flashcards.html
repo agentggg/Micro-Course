@@ -29,6 +29,7 @@
     <meta property="og:description" content="Exploring Jesus in Today">
     <meta property="og:image" content="https://e-learn.stevensongerard.tech/coverimage/stevo_r_shirt.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
       body {
         background: linear-gradient(to bottom right, #0f0f0f, #2c2c2c);
@@ -191,16 +192,13 @@
           transform: translate(var(--x-move), var(--y-move)) scale(0.4);
         }
       }
-
-      .avatar-img {
-        width: 200vw;
-        height: 95vw;
-        object-fit: cover;
-        object-position: top center; /* 👈 ensures the head stays visible */
-        border-radius: 50%;
-        overflow: hidden;
-        display: block;
+      .popup.show {
+        animation: pop 0.3s ease-in-out;
       }
+      
+
+      
+      
       
       
       
@@ -208,63 +206,54 @@
       
     </style>
 </head>
-<body class="d-flex flex-column align-items-center justify-content-center p-3 position-relative">
-  <button onclick="handleBack()" class="back-btn">⬅️⬅️ Back</button>
+<body class="position-relative p-3 d-flex flex-column align-items-center justify-content-center">
+  <button class="back-btn" onclick="handleBack()">⬅️⬅️ Back</button>
+
   <div class="top-instructor text-light" id="instructor-label">
     Powered by: <strong>The Holy Spirit</strong><br>
     Inspired by: <strong class="text-warning">Tech & Faith</strong>
   </div>
-  
-  <div class="text-center w-10">
-    <img src="coverimage/stevo_r_shirt.png" alt="Avatar" id="avatar" class="img-fluid avatar-img shadow mb-1">
-    <div id="subtitles" class="mb-3 mt-2">
+
+  <div class="container text-center">
+      <img 
+        src="coverimage/stevo_r_shirt.png" 
+        alt="Avatar"
+        id="avatar"
+        class="rounded-circle d-block mx-auto shadow mb-2"
+        style="width: 200px; height: 200px; object-fit: cover; object-position: top center;">
+      <div id="subtitles">
       <h5 class="text-warning">Crafted by: Stevenson Gerard</h5>
       <h5 class="text-warning">Instructor: The Holy Spirit</h5>
     </div>
+
     <div class="d-flex justify-content-center" id="subscribe-button-popup">
-      <button onclick="showSubscribe()" class="btn border-primary btn-sm text-dark fw-bold rounded">
+      <button onclick="showSubscribe()" class="btn border-primary btn-sm text-dark fw-bold">
         <span class="text-warning h5">👨🏽‍💻 Subscribe 📲 to Kingdom Tech</span>
       </button>
     </div>
+
     <div class="card-container">
-      <div class="card" id="flashcard"><strong>Tap to begin</strong></div>
+      <div class="card custom text-center p-3" id="flashcard">
+        <strong>Tap to begin</strong>
+      </div>
     </div>
+    
+    
 
     <div class="d-flex flex-wrap justify-content-center gap-2 my-4 d-none" id="feedback-buttons">
-      <button class="btn btn-warning bg-dark text-danger display-2" onclick="sendFeedback('like')">♥️ This is Good</button>
+      <button class="btn btn-warning bg-dark text-danger" onclick="sendFeedback('like')">♥️ This is Good</button>
       <button class="btn btn-warning bg-dark text-warning" onclick="sendFeedback('dislike')">👎 Didn't Help</button>
       <button class="btn btn-warning bg-dark text-light" onclick="sendFeedback('neutral')">😐 Neutral</button>
+      
     </div>
-    <div class="hint m-4" id="hint">Tap the card to reveal the next flash 🔄</div>
 
-    <div id="progress" class="text-warning my-2" style="font-weight: bold;"></div>
-<div class="popup" id="subscribe-popup">
-  <div class="form-box" id="subscribe-form">
-    <h2>Kingdom Tech Expansion 🚀</h2>
-    <p style="font-size: 0.9em">Let's get you plugged into the Kingdom Tech Space 🔥</p>
-    <input type="text" id="sub-fn" placeholder="First Name">
-    <input type="text" id="sub-ln" placeholder="Last Name">
-    <input type="email" id="sub-email" placeholder="Email">
-    <input type="tel" id="sub-phone" placeholder="Phone Number">
-    <select id="sub-ref">
-      <option value="">How did you hear about us?</option>
-      <option value="Friend">Friend</option>
-      <option value="Church">Event</option>
-      <option value="Instagram">Social Media</option>
-      <option value="Text">Text</option>
-      <option value="Other">Other</option>
-    </select>
-    <div class="actions mt-3 text-end">
-      <button onclick="submitSubscribe()">✅ Join</button>
-      <button onclick="hidePopup('subscribe-popup')">Cancel</button>
-    </div>
+    <div class="hint m-4" id="hint">Tap the card to reveal the next flash 🔄</div>
+    <div id="progress" class="text-warning my-2 fw-bold"></div>
   </div>
-</div>
-  </div> 
- 
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> 
   <script src="./config.js"></script>
   <script>
-    const card = document.getElementById('flashcard');
     const avatar = document.getElementById('avatar');
     const instructorLabel = document.getElementById('instructor-label');
     const subtitleContainer = document.getElementById('subtitles');
@@ -273,7 +262,8 @@
     const subscribeButton = document.getElementById('subscribe-button-popup');
     const progress = document.getElementById('progress');
     const form = document.getElementById('subscribe-form');
-  
+    const popup = document.getElementById('subscribe-popup'); // ✅ Add this at the top of your script
+
     const courseId = new URLSearchParams(window.location.search).get('courseId');
     const database_id = new URLSearchParams(window.location.search).get('database_id');
   
@@ -282,10 +272,21 @@
     let courseSlug = courseId;
     let startTime = Date.now();
   
+    const card = document.getElementById('flashcard');
+    card.addEventListener('click', () => {
+      if (index < flashcards.length) {
+        updateSlide();
+        index++; // ✅ advance after showing
+      }
+    });
+    
+    
     document.addEventListener('DOMContentLoaded', () => {
       feedback.classList.add('d-none');
       subscribeButton.classList.remove('show');
     });
+    
+
   
     function toggleVisibility(el, show) {
       el.style.display = show ? 'block' : 'none';
@@ -297,7 +298,7 @@
       const isLast = index === flashcards.length - 1;
     
       progress.textContent = `${index + 1}/${flashcards.length}`;
-      card.className = isFirst ? "card single-line" : "card";
+      card.classList.toggle('single-line', isFirst);
       card.textContent = content;
     
       toggleVisibility(instructorLabel, !isFirst && !isLast);
@@ -316,7 +317,6 @@
       } else {
         feedback.classList.add('d-none');
       }
-      index = Math.min(index + 1, flashcards.length - 1);
     }
 
     
@@ -330,9 +330,14 @@
     }
     
     function hidePopup(id) {
-      document.getElementById(id).style.display = 'none';
-      if (id === 'subscribe-popup') {
-        subscribeButton.classList.add('show');
+      const el = document.getElementById(id);
+      if (el) {
+        el.style.display = 'none';
+        el.classList.remove('show');
+    
+        if (id === 'subscribe-popup') {
+          subscribeButton.classList.add('show'); // optional
+        }
       }
     }
     
@@ -420,16 +425,28 @@
         body: JSON.stringify({ course: courseSlug, cardIndex: index, feedback: type })
       });
     
-      card.textContent = '🙏 Thanks for your feedback!';
-      feedback.classList.add('d-none');
-    
-      const share = document.getElementById('share-container');
-      if (share) share.classList.remove('d-none');
-    
       if (type === 'like') {
         launchEmojiRain();
       }
+    
+      setTimeout(() => {
+        card.textContent = '🙏 Thanks for your feedback!';
+        feedback.classList.add('d-none');
+    
+        const share = document.getElementById('share-container');
+        if (share) share.classList.remove('d-none');
+    
+        // ✅ Do NOT touch subscribeButton here
+      }, 300);
     }
+    
+    
+    function showSubscribe() {
+      const popup = document.getElementById('subscribe-popup');
+      popup.style.display = 'flex';
+      popup.classList.add('show');
+    }
+    
     
     function shareCourse() {
       const shareUrl = window.location.href;
@@ -525,5 +542,41 @@
         updateSlide();
       });
   </script>
+  <div class="popup" id="subscribe-popup">
+    <div class="form-box bg-light text-dark shadow-lg border border-3 border-warning">
+      <h4 class="mb-3 text-center fw-bold text-warning">Kingdom Tech Expansion 🚀</h4>
+      <p class="text-center small mb-4">Let's get you plugged into the Kingdom Tech Space 🔥</p>
+      
+      <div class="mb-3">
+        <input type="text" id="sub-fn" class="form-control" placeholder="First Name">
+      </div>
+      <div class="mb-3">
+        <input type="text" id="sub-ln" class="form-control" placeholder="Last Name">
+      </div>
+      <div class="mb-3">
+        <input type="email" id="sub-email" class="form-control" placeholder="Email">
+      </div>
+      <div class="mb-3">
+        <input type="tel" id="sub-phone" class="form-control" placeholder="Phone Number">
+      </div>
+      <div class="mb-3">
+        <select id="sub-ref" class="form-select">
+          <option value="">How did you hear about us?</option>
+          <option value="Friend">Friend</option>
+          <option value="Church">Event</option>
+          <option value="Instagram">Social Media</option>
+          <option value="Text">Text</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      
+      <div class="d-flex justify-content-between mt-4">
+        <button class="btn btn-dark" onclick="submitSubscribe()">✅  Join</button>
+        <button class="btn btn-outline-danger" onclick="hidePopup('subscribe-popup')">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  
 </body>
 </html>
