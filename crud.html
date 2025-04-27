@@ -14,6 +14,9 @@
     <div class="container mb-4">
       <div class="row g-2">
         <div class="col-md-3"><input type="text" class="form-control" id="title" placeholder="Course Title"></div>
+        <div class="col-md-3">
+          <input type="text" class="form-control" id="recipient" placeholder="Recipient (Optional)">
+        </div>        
         <div class="col-md-3"><input type="text" class="form-control" id="description" placeholder="Description"></div>
         <div class="col-md-3"><input type="text" class="form-control" id="name_identifier" placeholder="Course Identifier"></div>
         <div class="col-md-3">
@@ -81,6 +84,7 @@
         description: document.getElementById('description').value.trim(),
         name_identifier: document.getElementById('name_identifier').value.trim(),
         profile_type: document.getElementById('profile_type').value,
+        recipient: document.getElementById('recipient').value.trim(),
         points: [...document.querySelectorAll('#array-fields textarea')].map(t => t.value.trim())
       };
       localStorage.setItem('courseFormData', JSON.stringify(data));
@@ -94,17 +98,21 @@
     
     
     function loadFormFromLocalStorage() {
-      const saved = localStorage.getItem('courseFormData');
-      if (!saved) return;
+      const saved = localStorage.getItem('courseFormData'); // ✅ FIRST: get saved data
+      if (!saved) return; // ✅ SECOND: if not found, exit
     
-      const data = JSON.parse(saved);
+      const data = JSON.parse(saved); // ✅ THIRD: parse the JSON
+    
+      // ✅ NOW safe to use data
       document.getElementById('title').value = data.title || '';
       document.getElementById('description').value = data.description || '';
       document.getElementById('name_identifier').value = data.name_identifier || '';
       document.getElementById('profile_type').value = data.profile_type || '';
+      document.getElementById('recipient').value = data.recipient || '';
     
       const container = document.getElementById('array-fields');
       container.innerHTML = '';
+      
       if (data.points && data.points.length > 0) {
         data.points.forEach(point => {
           const div = document.createElement('div');
@@ -159,6 +167,8 @@
               <input type="text" class="form-control mb-2" value="${course.title || ''}" onchange="editCourse('${course._id}', 'title', this.value)">
 
               <h6 class="mt-2">🔗 Profile Type</h6>
+              <h6 class="mt-2">🎯 Recipient</h6>
+                  <input type="text" class="form-control mb-2" value="${course.recipient || ''}" onchange="editCourse('${course._id}', 'recipient', this.value)">
               <select class="form-select mb-2" onchange="editCourse('${course._id}', 'profile_type', this.value)">
                 <option ${course.profile_type === 'Prophetic' ? 'selected' : ''}>Prophetic</option>
                 <option ${course.profile_type === 'Default' ? 'selected' : ''}>Default</option>
@@ -243,6 +253,7 @@
       const profile_type = document.getElementById('profile_type').value;
       const name_identifier = document.getElementById('name_identifier').value;
       const createdAt = new Date().toISOString();
+      const recipient = document.getElementById('recipient').value.trim();
       const points = [...document.querySelectorAll('#array-fields textarea')]
         .map(input => input.value.trim()).filter(Boolean);
 
@@ -257,7 +268,8 @@
         profile_type,
         createdAt,
         points,
-        name_identifier
+        name_identifier,
+        recipient
       };
 
       fetch(`${CONFIG.API_BASE}/elearn/new_course`, {
