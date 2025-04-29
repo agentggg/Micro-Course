@@ -165,7 +165,8 @@
             <div class="card-body collapse" id="${cardId}">
               <h6 class="mt-2">📝 Title</h6>
               <input type="text" class="form-control mb-2" value="${course.title || ''}" onchange="editCourse('${course._id}', 'title', this.value)">
-
+              <h6 class="mt-2">📝 Course Identifier</h6>
+              <input type="text" class="form-control mb-2" value="${course.name_identifier || ''}" onchange="editCourse('${course._id}', 'name_identifier', this.value)">
               <h6 class="mt-2">🔗 Profile Type</h6>
               <h6 class="mt-2">🎯 Recipient</h6>
                   <input type="text" class="form-control mb-2" value="${course.recipient || ''}" onchange="editCourse('${course._id}', 'recipient', this.value)">
