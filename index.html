@@ -223,7 +223,8 @@
             div.className = 'course';
             div.innerHTML = `
               <strong>${course.title}</strong><br/>
-              <p>${formatDateTime(course.createdAt)}</p>
+              <p>Created: ${formatDateTime(course.createdAt)}</p>
+              <p>Published Date: ${course.sent_date ?? "Not Published Yet"}</p>
             `;
             div.onclick = () => {
               window.location.href = `./flashcards.html?courseId=${course.name_identifier || course._id}&database_id=${course._id}`;
