@@ -16,7 +16,10 @@
         <div class="col-md-3"><input type="text" class="form-control" id="title" placeholder="Course Title"></div>
         <div class="col-md-3">
           <input type="text" class="form-control" id="recipient" placeholder="Recipient (Optional)">
-        </div>        
+        </div>      
+        <div class="col-md-3">
+          <input type="text" class="form-control" id="sent_date" placeholder="Sent Date (MM/DD/YYYY HH:MM AM/PM)">
+        </div>          
         <div class="col-md-3"><input type="text" class="form-control" id="description" placeholder="Description"></div>
         <div class="col-md-3"><input type="text" class="form-control" id="name_identifier" placeholder="Course Identifier"></div>
         <div class="col-md-3">
@@ -81,6 +84,7 @@
     function saveFormToLocalStorage() {
       const data = {
         title: document.getElementById('title').value.trim(),
+        sent_date: document.getElementById('sent_date').value.trim(),
         description: document.getElementById('description').value.trim(),
         name_identifier: document.getElementById('name_identifier').value.trim(),
         profile_type: document.getElementById('profile_type').value,
@@ -109,7 +113,8 @@
       document.getElementById('name_identifier').value = data.name_identifier || '';
       document.getElementById('profile_type').value = data.profile_type || '';
       document.getElementById('recipient').value = data.recipient || '';
-    
+      document.getElementById('sent_date').value = data.sent_date || '';
+
       const container = document.getElementById('array-fields');
       container.innerHTML = '';
       
@@ -165,10 +170,11 @@
             <div class="card-body collapse" id="${cardId}">
               <h6 class="mt-2">📝 Title</h6>
               <input type="text" class="form-control mb-2" value="${course.title || ''}" onchange="editCourse('${course._id}', 'title', this.value)">
+                            <h6 class="mt-2">📅 Sent Date</h6>
+              <input type="text" class="form-control mb-2" value="${course.sent_date || ''}" onchange="editCourse('${course._id}', 'sent_date', this.value)">
               <h6 class="mt-2">📝 Course Identifier</h6>
               <input type="text" class="form-control mb-2" value="${course.name_identifier || ''}" onchange="editCourse('${course._id}', 'name_identifier', this.value)">
               <h6 class="mt-2">🔗 Profile Type</h6>
-              <h6 class="mt-2">🎯 Recipient</h6>
                   <input type="text" class="form-control mb-2" value="${course.recipient || ''}" onchange="editCourse('${course._id}', 'recipient', this.value)">
               <select class="form-select mb-2" onchange="editCourse('${course._id}', 'profile_type', this.value)">
                 <option ${course.profile_type === 'Prophetic' ? 'selected' : ''}>Prophetic</option>
@@ -180,6 +186,7 @@
                 <option ${course.profile_type === 'Ministers' ? 'selected' : ''}>Ministers</option>
                 <option ${course.profile_type === 'Life' ? 'selected' : ''}>Life</option>
               </select>
+              <h6 class="mt-2">🎯 Recipient</h6>
 
 <h6 class="mt-3">📜 Cards</h6>
 <div id="points-${course._id}">
@@ -255,6 +262,7 @@
       const name_identifier = document.getElementById('name_identifier').value;
       const createdAt = new Date().toISOString();
       const recipient = document.getElementById('recipient').value.trim();
+      const sent_date = document.getElementById('sent_date').value.trim();
       const points = [...document.querySelectorAll('#array-fields textarea')]
         .map(input => input.value.trim()).filter(Boolean);
 
@@ -270,7 +278,8 @@
         createdAt,
         points,
         name_identifier,
-        recipient
+        recipient,
+        sent_date
       };
 
       fetch(`${CONFIG.API_BASE}/elearn/new_course`, {
@@ -284,6 +293,7 @@
         document.getElementById('description').value = '';
         document.getElementById('profile_type').value = '';
         document.getElementById('name_identifier').value = '';
+        document.getElementById('sent_date').value = '';
         document.getElementById('array-fields').innerHTML = '';
         addArrayField();
         loadCourses();
