@@ -175,7 +175,6 @@
               <h6 class="mt-2">📝 Course Identifier</h6>
               <input type="text" class="form-control mb-2" value="${course.name_identifier || ''}" onchange="editCourse('${course._id}', 'name_identifier', this.value)">
               <h6 class="mt-2">🔗 Profile Type</h6>
-                  <input type="text" class="form-control mb-2" value="${course.recipient || ''}" onchange="editCourse('${course._id}', 'recipient', this.value)">
               <select class="form-select mb-2" onchange="editCourse('${course._id}', 'profile_type', this.value)">
                 <option ${course.profile_type === 'Prophetic' ? 'selected' : ''}>Prophetic</option>
                 <option ${course.profile_type === 'Default' ? 'selected' : ''}>Default</option>
@@ -187,6 +186,7 @@
                 <option ${course.profile_type === 'Life' ? 'selected' : ''}>Life</option>
               </select>
               <h6 class="mt-2">🎯 Recipient</h6>
+              <input type="text" class="form-control mb-2" value="${course.recipient || ''}" onchange="editCourse('${course._id}', 'recipient', this.value)">
 
 <h6 class="mt-3">📜 Cards</h6>
 <div id="points-${course._id}">
