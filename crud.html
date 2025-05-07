@@ -261,7 +261,7 @@
     
       course.cards.splice(index, 1); // remove from array
     
-      fetch(`${CONFIG.API_BASE}/elearn/list/${courseId}`, {
+      fetch(`${CONFIG.API_BASE}/elearn/delete_course/${courseId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(course)
@@ -270,7 +270,7 @@
         renderSingleCourse(course);
       });
     }
-           
+      
     
     function submitCourse() {
       const title = document.getElementById('title').value.trim();
