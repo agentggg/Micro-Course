@@ -6,6 +6,23 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
+<style>
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+  .container, .container-fluid {
+    max-width: 100% !important;
+  }
+  .input-group > textarea {
+    min-width: 0;
+    flex-grow: 1;
+  }
+  .card {
+    min-width: 0;
+  }
+</style>
+
 <body class="bg-dark text-white p-4">
   <h1 class="text-center mb-4 text-warning">📖 Course Manager</h1>
   <div id="auth-check" class="text-center mt-5 text-warning fs-5">Verifying access...</div>
@@ -45,7 +62,7 @@
       <button class="btn btn-success" onclick="submitCourse()">✅ Done</button>
     </div>
 
-    <div class="container">
+    <div class="container-fluid">
       <div class="row" id="course-card-container"></div>
     </div>
   </div>
@@ -253,7 +270,7 @@
         renderSingleCourse(course);
       });
     }
-
+      
     
     function submitCourse() {
       const title = document.getElementById('title').value.trim();
@@ -265,12 +282,12 @@
       const sent_date = document.getElementById('sent_date').value.trim();
       const points = [...document.querySelectorAll('#array-fields textarea')]
         .map(input => input.value.trim()).filter(Boolean);
-
+    
       if (!title || !description || !profile_type || points.length === 0) {
         alert("🚨 Please fill all fields and add at least one teaching card.");
         return;
       }
-
+    
       const data = {
         title,
         description,
@@ -281,28 +298,38 @@
         recipient,
         sent_date
       };
-
+    
       fetch(`${CONFIG.API_BASE}/elearn/new_course`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
-      }).then(() => {
-        alert("✅ Course submitted successfully!");
-        localStorage.removeItem('courseFormData');
-        document.getElementById('title').value = '';
-        document.getElementById('description').value = '';
-        document.getElementById('profile_type').value = '';
-        document.getElementById('name_identifier').value = '';
-        document.getElementById('sent_date').value = '';
-        document.getElementById('array-fields').innerHTML = '';
-        addArrayField();
-        loadCourses();
-      });
+      })
+        .then(response => {
+          if (response.status === 201) {
+            alert("✅ Course submitted successfully!");
+            localStorage.removeItem('courseFormData');
+            document.getElementById('title').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('profile_type').value = '';
+            document.getElementById('name_identifier').value = '';
+            document.getElementById('sent_date').value = '';
+            document.getElementById('recipient').value = '';
+            document.getElementById('array-fields').innerHTML = '';
+            addArrayField();
+            loadCourses();
+          } else {
+            alert("❌ Course not submitted successfully. Please check your inputs or try again.");
+          }
+        })
+        .catch(error => {
+          console.error('Submission error:', error);
+          alert("❌ An error occurred during submission. Please try again later.");
+        });
     }
-
+    
     function deleteCourse(courseId) {
       if (!confirm("Are you sure you want to delete this course?")) return;
-      fetch(`${CONFIG.API_BASE}/elearn/courses/${courseId}`, {
+      fetch(`${CONFIG.API_BASE}/elearn/list/${courseId}`, {
         method: 'DELETE'
       }).then(() => loadCourses());
     }
