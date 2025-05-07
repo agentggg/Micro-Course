@@ -261,7 +261,7 @@
     
       course.cards.splice(index, 1); // remove from array
     
-      fetch(`${CONFIG.API_BASE}/elearn/delete_course/${courseId}`, {
+      fetch(`${CONFIG.API_BASE}/elearn/courses/${courseId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(course)
